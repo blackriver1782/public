@@ -43,6 +43,10 @@ google-calendar-mcp/token.json
 !/public/
 !/public/**
 
+#! GitHub Actions の workflow は追跡対象にする
+!/.github/
+!/.github/**
+
 # public 配下でも macOS の一時ファイルは追跡しない
 /public/**/.DS_Store
 /public/**/._*
