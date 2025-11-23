@@ -1,0 +1,48 @@
+# 追跡対象外フォルダ（このフォルダ配下はすべてGitの追跡対象外）
+追跡対象外/
+
+# Google Sheets files (Google Drive shortcuts)
+*.gsheet
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+tasksboard-google-tasks-mcp/credentials.json
+google-calendar-mcp/token.json
+
+# ルート直下の .gitignore 自身も ignore 対象にする
+/.gitignore
+
+# ========================================
+# Git では基本的に /public 配下だけを管理する
+# （それ以外は ignore 対象）
+# ========================================
+/*
+!/.gitignore
+!/public/
+!/public/**
+
+# public 配下でも macOS の一時ファイルは追跡しない
+/public/**/.DS_Store
+/public/**/._*
