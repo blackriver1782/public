@@ -1,292 +1,394 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AWS Go Release メモ</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0f172a;
-      --card-bg: #020617;
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.2);
-      --border: rgba(148, 163, 184, 0.4);
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
-    }
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-    }
-    .shell {
-      max-width: 960px;
-      width: 100%;
-      background: radial-gradient(circle at top left, #020617 0, #020617 40%, #020617ee 100%);
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      overflow: hidden;
-      backdrop-filter: blur(22px);
-    }
-    .shell-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
-      background: linear-gradient(to right, #020617, #0b1120);
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-    }
-    .dot.red { background: #f97373; }
-    .dot.yellow { background: #facc15; }
-    .dot.green { background: #22c55e; }
-    .shell-title {
-      margin-left: auto;
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-    .content {
-      padding: 26px 26px 24px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 22px;
-    }
-    @media (max-width: 768px) {
-      .content {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-    .tagline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--accent-soft);
-      background: radial-gradient(circle at left, rgba(34, 197, 94, 0.16), transparent 70%);
-      color: var(--accent);
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .tagline-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-    }
-    h1 {
-      font-size: clamp(26px, 3.2vw, 32px);
-      margin: 0 0 10px;
-      letter-spacing: 0.02em;
-    }
-    h1 span {
-      background: linear-gradient(to right, #22c55e, #a3e635);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 16px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-    }
-    .meta strong {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    .pill {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      color: var(--text-muted);
-      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), transparent 70%);
-    }
-    .section-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    p {
-      margin: 0 0 10px;
-      font-size: 13px;
-      line-height: 1.7;
-      color: var(--text-main);
-    }
-    ul {
-      margin: 0;
-      padding-left: 18px;
-      font-size: 13px;
-      color: var(--text-main);
-    }
-    li + li {
-      margin-top: 4px;
-    }
-    .side-card {
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.06), rgba(15, 23, 42, 0.96));
-      padding: 14px 16px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .side-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .side-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .side-badge {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.18);
-      color: #bbf7d0;
-      border: 1px solid rgba(34, 197, 94, 0.5);
-    }
-    .kv-row {
-      display: grid;
-      grid-template-columns: 92px minmax(0, 1fr);
-      gap: 4px 10px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .kv-row strong {
-      font-weight: 500;
-      color: var(--text-main);
-    }
-    .footer {
-      border-top: 1px solid rgba(15, 23, 42, 0.9);
-      padding: 8px 16px 11px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .footer-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .dot-live {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.85);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWSで学ぶGo実践講座 - CloudTech x DevOps Camp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            aws: '#FF9900',
+                            go: '#00ADD8',
+                            dark: '#0F172A',
+                            darker: '#020617',
+                            accent: '#22c55e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans JP', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #1e293b 1px, transparent 1px),
+                            linear-gradient(to bottom, #1e293b 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #00ADD8 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
-<body>
-  <main class="shell">
-    <div class="shell-header">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
-      <div class="shell-title">20251123-aws-go-release.html</div>
-    </div>
-    <section class="content">
-      <article>
-        <div class="tagline">
-          <span class="tagline-dot"></span>
-          <span>AWS × Go · Release Note</span>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="container mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="https://kws-cloud-tech.com/" target="_blank" class="block h-10 hover:opacity-80 transition">
+                    <img src="../../CloudTech-icon/CloudTech-1-trans.png" alt="CloudTech" class="h-full w-auto object-contain">
+                </a>
+                <span class="text-slate-600 text-lg">×</span>
+                <span class="text-brand-go font-bold text-lg tracking-tight">DevOps Camp</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
+                <a href="#why-go" class="hover:text-white transition">Why Go?</a>
+                <a href="#interview" class="hover:text-white transition">対談</a>
+                <a href="#curriculum" class="hover:text-white transition">カリキュラム</a>
+                <a href="#instructor" class="hover:text-white transition">講師紹介</a>
+            </nav>
+            <a href="https://kws-cloud-tech.com/courses/test-course" target="_blank" class="bg-brand-go hover:bg-sky-600 text-white px-5 py-2 rounded-full text-sm font-bold transition shadow-lg shadow-sky-500/20">
+                講座を見る
+            </a>
         </div>
-        <h1><span>AWS Go Release</span> 作業メモ</h1>
-        <div class="meta">
-          <div><strong>日付</strong> 2025-11-23</div>
-          <div><strong>タグ</strong> AWS / Go / Release</div>
-          <div><strong>用途</strong> 個人メモ用 Ad-hoc HTML</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 overflow-hidden">
+        <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-brand-go/20 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            
+            <!-- CloudTech Logo in Hero -->
+            <div class="mb-8 animate-float">
+                <img src="../../CloudTech-icon/CloudTech-2-trans.png" alt="CloudTech Logo" class="h-24 md:h-32 mx-auto object-contain drop-shadow-2xl">
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 mb-8 opacity-0 animate-[fadeInUp_0.8s_0.2s_forwards]">
+                <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span class="text-xs font-medium text-brand-accent tracking-wider uppercase">New Release</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 tracking-tight opacity-0 animate-[fadeInUp_0.8s_0.4s_forwards]">
+                インフラとアプリの<br class="hidden md:block" />
+                <span class="text-gradient">境界を超えろ。</span>
+            </h1>
+            
+            <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-[fadeInUp_0.8s_0.6s_forwards]">
+                AI時代を生き抜く「実装力」を手に入れる。<br>
+                インフラエンジニアのための<span class="text-white font-bold">「AWSで学ぶGo実践講座」</span>ついに解禁。
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-[fadeInUp_0.8s_0.8s_forwards]">
+                <a href="https://kws-cloud-tech.com/courses/test-course" target="_blank" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full hover:shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5">
+                    講座を受講する
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </a>
+                <a href="#interview" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-slate-300 transition-all duration-200 bg-slate-800/50 border border-slate-700 rounded-full hover:bg-slate-800 hover:text-white">
+                    対談記事を読む
+                </a>
+            </div>
         </div>
-        <div class="pill-row">
-          <div class="pill">Infrastructure as Code</div>
-          <div class="pill">Release Checklist</div>
-          <div class="pill">Observability</div>
-          <div class="pill">Post-mortem Ready</div>
-        </div>
-        <div>
-          <div class="section-title">Overview</div>
-          <p>
-            このページは、AWS 上で稼働する Go アプリケーションのリリースに関する
-            アイデアやメモを一時的にまとめておくためのアドホックな HTML です。
-            固定の仕様書というよりは、試行や検証の結果を気軽に追記していくための
-            「作業用キャンバス」として使うことを想定しています。
-          </p>
-        </div>
-        <div>
-          <div class="section-title">Draft points</div>
-          <ul>
-            <li>AWS リソース構成（VPC / ALB / ECS or Lambda / RDS など）のたたき台</li>
-            <li>Go バイナリのビルド & デプロイ戦略（コンテナ or Lambda のどちらに寄せるか）</li>
-            <li>Blue/Green or Canary などリリース戦略パターンの比較メモ</li>
-            <li>CloudWatch / X-Ray / OpenTelemetry による観測性の設計メモ</li>
-            <li>障害発生時のロールバック手順や SLO/エラー予算のアイデア</li>
-          </ul>
-        </div>
-      </article>
-      <aside class="side-card">
-        <div class="side-header">
-          <div class="side-title">Release Snapshot</div>
-          <div class="side-badge">2025-11-23</div>
-        </div>
-        <div class="kv-row">
-          <span>Environment</span>
-          <span><strong>stg / prod 候補</strong></span>
-          <span>Runtime</span>
-          <span><strong>Go (Linux/amd64)</strong></span>
-          <span>Platform</span>
-          <span><strong>AWS (ECS / Lambda / TBD)</strong></span>
-          <span>Owner</span>
-          <span><strong>blackriver</strong></span>
-        </div>
-      </aside>
     </section>
-    <footer class="footer">
-      <span>Ad-hoc Note: 20251123-aws-go-release</span>
-      <div class="footer-right">
-        <span class="dot-live"></span>
-        <span>Editable locally · not an official spec</span>
-      </div>
+
+    <!-- Intro: Why Go? -->
+    <section id="why-go" class="py-24 bg-slate-900/50">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">なぜ今、インフラエンジニアが<span class="text-brand-go">Go</span>なのか？</h2>
+                <p class="text-slate-400">「言われた通り作るだけ」からの脱却。アプリの知識がインフラの質を変える。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-brand-go/50 transition duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-brand-go/10 rounded-xl flex items-center justify-center mb-6 text-brand-go">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">サーバー構築の質が変わる</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        アプリがどう動くかを知らないと、最適なインフラ構成は作れない。「言われたスペックで作る」から、アーキテクチャを提案できるエンジニアへ。
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-brand-go/50 transition duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-brand-aws/10 rounded-xl flex items-center justify-center mb-6 text-brand-aws">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">DevOps & CI/CD</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        テストやビルドの「辛さ」を理解することで、開発者に真に寄り添ったパイプライン設計が可能に。自動化の価値を最大化する。
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-brand-go/50 transition duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 text-emerald-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Serverless & Lambda</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Lambdaはロジックそのもの。クラウドエンジニアもコードが書けないと手が出せない領域が増えている。Goなら高速起動でサーバーレスに最適。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Interview -->
+    <section id="interview" class="py-24 relative">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-16">
+                <span class="text-brand-go font-bold tracking-wider text-sm uppercase mb-2 block">Special Talk</span>
+                <h2 class="text-3xl md:text-4xl font-bold">AI時代に問う「基礎力」の価値</h2>
+                <p class="text-slate-400 mt-4">なぜ今、AWS学習にGo言語が必要なのか。制作者ジェバンニ氏に迫る。</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-12">
+                
+                <!-- Topic 1: 境界線 -->
+                <div>
+                    <div class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300 mb-4">Topic 1: インフラとアプリの境界線</div>
+                    <div class="flex flex-col md:flex-row gap-6 bg-slate-800/30 p-8 rounded-2xl border border-slate-700/50 hover:border-brand-go/30 transition">
+                        <div class="flex-shrink-0 flex flex-col items-center space-y-2 md:w-24">
+                            <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden border-2 border-slate-600">
+                                <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/image-50.png" alt="くろかわ" class="w-full h-full object-cover">
+                            </div>
+                            <span class="text-xs font-bold text-slate-400">くろかわ</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-slate-300 italic mb-4 text-sm md:text-base leading-relaxed">
+                                「インフラエンジニアにとって『なぜ今Goなのか？』。最近はDevOpsやサーバーレスの現場で、アプリの知識がないと『言われた通り作るだけ』になりがちですよね。」
+                            </p>
+                            <div class="pl-4 md:pl-6 border-l-4 border-brand-go/30 mt-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-8 h-8 rounded-full bg-brand-go overflow-hidden border border-brand-go flex-shrink-0">
+                                        <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88-2025-11-21-21.14.31.png" alt="ジェバンニ" class="w-full h-full object-cover">
+                                    </div>
+                                    <span class="text-sm font-bold text-brand-go">ジェバンニ</span>
+                                </div>
+                                <p class="text-slate-400 text-sm md:text-base leading-relaxed">
+                                    「まさにその通りです。サーバー構築、DevOps、サーバーレス。どの業務でも、<strong class="text-white">アプリの中身を知らないと良い仕事ができない時代</strong>です。<br><br>
+                                    特にCI/CDパイプラインを構築する際、アプリ開発者の『テストやビルドの辛さ』を理解していないと、現場で使われないパイプラインを作ってしまう。Go言語を通してその感覚を掴んでほしいんです。」
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topic 2: AI時代の基礎力 -->
+                <div>
+                    <div class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300 mb-4">Topic 2: AI時代の「責任」と「基礎」</div>
+                    <div class="flex flex-col md:flex-row gap-6 bg-slate-800/30 p-8 rounded-2xl border border-slate-700/50 hover:border-brand-go/30 transition">
+                        <div class="flex-shrink-0 flex flex-col items-center space-y-2 md:w-24">
+                            <div class="w-16 h-16 rounded-full bg-brand-go flex items-center justify-center overflow-hidden border-2 border-brand-go/50">
+                                <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88-2025-11-21-21.14.31.png" alt="ジェバンニ" class="w-full h-full object-cover">
+                            </div>
+                            <span class="text-xs font-bold text-brand-go">ジェバンニ</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-slate-300 italic mb-4 text-sm md:text-base leading-relaxed">
+                                「AIがコードを書く時代ですが、<strong class="text-white">AIはエラー処理やログのセキュリティ配慮（個人情報の出力など）を平気で間違えます。</strong><br>
+                                その正誤を見抜く『目』を持つには、やはり基礎が必要です。『自分で手を動かした経験』がないと、AIが出したバグに気づけず、誤って承認してしまう。」
+                            </p>
+                            <div class="pl-4 md:pl-6 border-l-4 border-slate-600 mt-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-700 overflow-hidden border border-slate-600 flex-shrink-0">
+                                        <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/image-50.png" alt="くろかわ" class="w-full h-full object-cover">
+                                    </div>
+                                    <span class="text-sm font-bold text-white">くろかわ</span>
+                                </div>
+                                <p class="text-slate-400 text-sm md:text-base leading-relaxed">
+                                    「<strong class="text-white">『AIの責任を取る』のが人間の仕事になる</strong>わけですね。<br>
+                                    今回の講座でSQLや認証周り（JWT/Cognito）を深く扱うのも、ブラックボックスになりがちな部分こそ人間が理解しておくべきだという意図を感じます。基礎力こそが、自信を持ってシステムを運用するための鍵なんですね。」
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <a href="https://blog.kws-cloud-tech.com/2025/11/21/%e3%80%8caws%e3%81%a7%e5%ad%a6%e3%81%b6go%e5%ae%9f%e8%b7%b5%e8%ac%9b%e5%ba%a7%e3%80%8d%e3%82%92%e3%83%aa%e3%83%aa%e3%83%bc%e3%82%b9%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81/" target="_blank" class="text-sm text-brand-go hover:text-white underline decoration-brand-go/50 underline-offset-4 transition">
+                        対談の全文を読む（ブログ記事へ）
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum -->
+    <section id="curriculum" class="py-24 bg-slate-900">
+        <div class="container mx-auto px-6 reveal">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">実践的カリキュラム</h2>
+                    <p class="text-slate-400">実務で使える「堅牢なバックエンド」構築スキル。</p>
+                </div>
+                <div class="hidden md:block">
+                     <span class="px-4 py-2 bg-brand-aws/10 text-brand-aws rounded-full text-xs font-bold border border-brand-aws/20">CloudTech会員限定</span>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Item -->
+                <div class="flex gap-5 p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">01</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">Go言語の基礎と特性</h3>
+                        <p class="text-slate-400 text-sm">ポインタ、構造体、インターフェースなど、Go特有かつつまづきやすい概念を丁寧に解説。静的型付け言語の作法を学びます。</p>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="flex gap-5 p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">02</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">ORMに頼らないSQL</h3>
+                        <p class="text-slate-400 text-sm">あえて便利なORMを使わず、生のSQLを書くことでデータベースの挙動を深く理解。AIが書いたSQLのレビューも可能に。</p>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="flex gap-5 p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">03</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">RESTful API & 認証</h3>
+                        <p class="text-slate-400 text-sm">HTTPの基本からREST API設計、そしてJWT認証やAmazon Cognitoとの連携まで。セキュリティを意識した実装。</p>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="flex gap-5 p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">04</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">AWSへのデプロイ</h3>
+                        <p class="text-slate-400 text-sm">作っただけでは終わらない。EC2/RDSへの実践的なデプロイを通して、インフラとアプリの結合点を体得します。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instructor -->
+    <section id="instructor" class="py-24 border-t border-slate-800">
+        <div class="container mx-auto px-6 reveal">
+            <div class="glass-card rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-10 items-center">
+                <div class="w-32 h-32 md:w-48 md:h-48 flex-shrink-0 rounded-full bg-slate-700 overflow-hidden border-4 border-slate-600 relative shadow-2xl">
+                    <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88-2025-11-21-21.14.31.png" alt="ジェバンニ" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <div class="mb-4">
+                        <h3 class="text-2xl font-bold text-white mb-1">ジェバンニ</h3>
+                        <p class="text-brand-go font-medium">クラウドエンジニア / DevOps Camp 主宰</p>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-6">
+                        現役のクラウドエンジニア兼アプリケーション開発者。
+                        「作って終わりではなく、運用まで完結できるエンジニア」の育成に注力し、個人スクール「DevOps Camp」を立ち上げ。
+                        CI/CDやオブザーバビリティ（可視化）など、運用のプロフェッショナルを目指すための実践的なスキルを伝授している。
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                        <a href="https://kws-cloud-tech.com/courses/test-course" class="px-6 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold transition">CloudTechで講座を見る</a>
+                        <a href="https://reheartcloud.com/devopscamp/" target="_blank" class="px-6 py-2 rounded-lg border border-slate-600 hover:border-white text-slate-300 hover:text-white text-sm font-bold transition">DevOps Camp をチェック</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Footer -->
+    <section class="py-20 text-center">
+        <div class="container mx-auto px-6 reveal">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8">
+                <span class="block text-slate-400 text-2xl mb-4 font-normal">迷っている暇はない。</span>
+                <span class="text-white">今すぐ、<span class="text-brand-go">最強のエンジニア</span>へ。</span>
+            </h2>
+            <div class="flex flex-col items-center gap-4">
+                <a href="https://kws-cloud-tech.com/courses/test-course" target="_blank" class="w-full max-w-md py-5 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full hover:shadow-xl hover:shadow-sky-500/40 hover:scale-105">
+                    AWSで学ぶGo実践講座を始める
+                </a>
+                <p class="text-slate-500 text-sm mt-4">※本講座の受講には、CloudTech有料会員（基本会員）のライセンスが必要です。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-8 border-t border-slate-900">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
+            <div class="mb-4 md:mb-0">
+                &copy; 2025 CloudTech & DevOps Camp. All rights reserved.
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-slate-400 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-400 transition">Terms of Service</a>
+                <a href="#" class="hover:text-slate-400 transition">Contact</a>
+            </div>
+        </div>
     </footer>
-  </main>
+
+    <script>
+        // Reveal animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = function() {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 150;
+
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            // Trigger once on load
+            revealOnScroll();
+        });
+    </script>
 </body>
 </html>
-
-
