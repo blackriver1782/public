@@ -24,6 +24,7 @@
                     animation: {
                         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
                         'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeInUp: {
@@ -104,27 +105,60 @@
         
         <div class="container mx-auto px-6 relative z-10 text-center">
             
-            <!-- CloudTech Logo in Hero -->
             <div class="mb-8 animate-float">
-                <img src="../../CloudTech-icon/CloudTech-2-trans.png" alt="CloudTech Logo" class="h-24 md:h-32 mx-auto object-contain drop-shadow-2xl">
+                <img src="../../CloudTech-icon/CloudTech-2-trans.png" alt="CloudTech Logo" class="h-20 md:h-28 mx-auto object-contain drop-shadow-2xl">
             </div>
 
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 mb-8 opacity-0 animate-[fadeInUp_0.8s_0.2s_forwards]">
+            <!-- Announcement Banner -->
+            <div class="mb-8 opacity-0 animate-[fadeInUp_0.8s_0.1s_forwards]">
+                <div class="inline-block relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                    <div class="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 font-black text-lg md:text-xl tracking-wide">
+                            CloudTechに新コース「AWSで学ぶGo実践コース」がついに完成！<br class="md:hidden">待望の正式リリースとなります！
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Image (Gemini Generated) -->
+            <div class="mb-6 relative w-full max-w-lg mx-auto opacity-0 animate-[fadeInUp_0.8s_0.2s_forwards]">
+                <div class="absolute inset-0 bg-gradient-to-r from-brand-go to-brand-accent rounded-2xl blur-2xl opacity-30 animate-pulse-slow"></div>
+                <div class="relative rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl shadow-brand-go/20 transform hover:scale-105 transition duration-500 cursor-pointer group">
+                     <img src="https://blog.kws-cloud-tech.com/wp-content/uploads/Gemini_Generated_Image_bic6xlbic6xlbic6-scaled.png" alt="AWS x Go Visual" class="w-full h-auto object-cover">
+                     <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Free Trial Badge (Independent) -->
+            <div class="mb-10 opacity-0 animate-[fadeInUp_0.8s_0.3s_forwards]">
+                <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-brand-accent/10 border border-brand-accent/50 shadow-lg shadow-brand-accent/20 animate-pulse">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-accent"></span>
+                    </span>
+                    <span class="text-brand-accent font-bold text-sm md:text-base tracking-wide">
+                        今ならCloudTechフリーコース登録で一部無料視聴ができます！！
+                    </span>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 mb-8 opacity-0 animate-[fadeInUp_0.8s_0.4s_forwards]">
                 <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
                 <span class="text-xs font-medium text-brand-accent tracking-wider uppercase">New Release</span>
             </div>
             
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 tracking-tight opacity-0 animate-[fadeInUp_0.8s_0.4s_forwards]">
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 tracking-tight opacity-0 animate-[fadeInUp_0.8s_0.6s_forwards]">
                 インフラとアプリの<br class="hidden md:block" />
                 <span class="text-gradient">境界を超えろ。</span>
             </h1>
             
-            <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-[fadeInUp_0.8s_0.6s_forwards]">
+            <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-[fadeInUp_0.8s_0.8s_forwards]">
                 AI時代を生き抜く「実装力」を手に入れる。<br>
                 インフラエンジニアのための<span class="text-white font-bold">「AWSで学ぶGo実践講座」</span>ついに解禁。
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-[fadeInUp_0.8s_0.8s_forwards]">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-[fadeInUp_0.8s_1.0s_forwards]">
                 <a href="https://kws-cloud-tech.com/courses/test-course" target="_blank" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full hover:shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5">
                     講座を受講する
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
@@ -258,7 +292,6 @@
                         対談の全文を読む（ブログ記事へ）
                     </a>
                 </div>
-
             </div>
         </div>
     </section>
@@ -358,12 +391,9 @@
     <footer class="bg-black py-8 border-t border-slate-900">
         <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
             <div class="mb-4 md:mb-0">
-                &copy; 2025 CloudTech & DevOps Camp. All rights reserved.
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-slate-400 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-slate-400 transition">Terms of Service</a>
-                <a href="#" class="hover:text-slate-400 transition">Contact</a>
+                <a href="https://test.kws-cloud-tech.com/" target="_blank" class="hover:text-slate-400 transition">
+                    &copy; 2025 CloudTech & DevOps Camp. All rights reserved.
+                </a>
             </div>
         </div>
     </footer>
