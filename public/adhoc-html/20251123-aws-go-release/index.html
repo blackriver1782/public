@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS Go Release メモ</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.2);
+      --border: rgba(148, 163, 184, 0.4);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .shell {
+      max-width: 960px;
+      width: 100%;
+      background: radial-gradient(circle at top left, #020617 0, #020617 40%, #020617ee 100%);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      backdrop-filter: blur(22px);
+    }
+    .shell-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+      background: linear-gradient(to right, #020617, #0b1120);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+    .dot.red { background: #f97373; }
+    .dot.yellow { background: #facc15; }
+    .dot.green { background: #22c55e; }
+    .shell-title {
+      margin-left: auto;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .content {
+      padding: 26px 26px 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 22px;
+    }
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: radial-gradient(circle at left, rgba(34, 197, 94, 0.16), transparent 70%);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .tagline-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+    h1 {
+      font-size: clamp(26px, 3.2vw, 32px);
+      margin: 0 0 10px;
+      letter-spacing: 0.02em;
+    }
+    h1 span {
+      background: linear-gradient(to right, #22c55e, #a3e635);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .meta strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--text-muted);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), transparent 70%);
+    }
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-main);
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+    li + li {
+      margin-top: 4px;
+    }
+    .side-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.06), rgba(15, 23, 42, 0.96));
+      padding: 14px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .side-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .side-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .side-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.18);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.5);
+    }
+    .kv-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 4px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .kv-row strong {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .footer {
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 8px 16px 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .footer-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.85);
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="shell-header">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="shell-title">20251123-aws-go-release.html</div>
+    </div>
+    <section class="content">
+      <article>
+        <div class="tagline">
+          <span class="tagline-dot"></span>
+          <span>AWS × Go · Release Note</span>
+        </div>
+        <h1><span>AWS Go Release</span> 作業メモ</h1>
+        <div class="meta">
+          <div><strong>日付</strong> 2025-11-23</div>
+          <div><strong>タグ</strong> AWS / Go / Release</div>
+          <div><strong>用途</strong> 個人メモ用 Ad-hoc HTML</div>
+        </div>
+        <div class="pill-row">
+          <div class="pill">Infrastructure as Code</div>
+          <div class="pill">Release Checklist</div>
+          <div class="pill">Observability</div>
+          <div class="pill">Post-mortem Ready</div>
+        </div>
+        <div>
+          <div class="section-title">Overview</div>
+          <p>
+            このページは、AWS 上で稼働する Go アプリケーションのリリースに関する
+            アイデアやメモを一時的にまとめておくためのアドホックな HTML です。
+            固定の仕様書というよりは、試行や検証の結果を気軽に追記していくための
+            「作業用キャンバス」として使うことを想定しています。
+          </p>
+        </div>
+        <div>
+          <div class="section-title">Draft points</div>
+          <ul>
+            <li>AWS リソース構成（VPC / ALB / ECS or Lambda / RDS など）のたたき台</li>
+            <li>Go バイナリのビルド & デプロイ戦略（コンテナ or Lambda のどちらに寄せるか）</li>
+            <li>Blue/Green or Canary などリリース戦略パターンの比較メモ</li>
+            <li>CloudWatch / X-Ray / OpenTelemetry による観測性の設計メモ</li>
+            <li>障害発生時のロールバック手順や SLO/エラー予算のアイデア</li>
+          </ul>
+        </div>
+      </article>
+      <aside class="side-card">
+        <div class="side-header">
+          <div class="side-title">Release Snapshot</div>
+          <div class="side-badge">2025-11-23</div>
+        </div>
+        <div class="kv-row">
+          <span>Environment</span>
+          <span><strong>stg / prod 候補</strong></span>
+          <span>Runtime</span>
+          <span><strong>Go (Linux/amd64)</strong></span>
+          <span>Platform</span>
+          <span><strong>AWS (ECS / Lambda / TBD)</strong></span>
+          <span>Owner</span>
+          <span><strong>blackriver</strong></span>
+        </div>
+      </aside>
+    </section>
+    <footer class="footer">
+      <span>Ad-hoc Note: 20251123-aws-go-release</span>
+      <div class="footer-right">
+        <span class="dot-live"></span>
+        <span>Editable locally · not an official spec</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
+
+
