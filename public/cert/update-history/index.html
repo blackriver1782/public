@@ -84,13 +84,27 @@
       let html = '';
       const sortedMonths = Object.keys(byMonth).sort().reverse();
       
-      sortedMonths.forEach(monthKey => {
+      sortedMonths.forEach((monthKey, index) => {
         const [year, month] = monthKey.split('-');
         const monthName = `${year}年${parseInt(month)}月`;
         
+        // この月の総件数を計算
+        const monthTotal = Object.values(byMonth[monthKey]).reduce((sum, items) => sum + items.length, 0);
+        
+        // 最新の月は開いた状態にする
+        const isOpen = index === 0 ? 'open' : '';
+        
         html += `
-          <section class="history-section">
-            <h2 class="section-title">${monthName}</h2>
+          <section class="history-section ${isOpen}">
+            <div class="section-header" onclick="toggleSection(this)">
+              <div class="section-left">
+                <h2 class="section-title">${monthName}</h2>
+                <span class="section-count">${monthTotal}件</span>
+              </div>
+              <svg class="section-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
             <div class="history-list">
         `;
         
@@ -133,6 +147,11 @@
       });
 
       document.getElementById('main-content').innerHTML = html;
+    }
+
+    function toggleSection(header) {
+      const section = header.closest('.history-section');
+      section.classList.toggle('open');
     }
 
     // ページ読み込み時にデータを取得
