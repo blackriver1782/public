@@ -28,6 +28,8 @@
       </div>
     </header>
 
+    <div id="filter-container"></div>
+
     <main id="main-content">
       <div class="loading">読み込み中...</div>
     </main>
@@ -41,16 +43,62 @@
   </div>
 
   <script>
+    let allData = null;
+    let currentFilter = 'all';
+
     async function loadData() {
       try {
         const response = await fetch('./data.json');
         if (!response.ok) throw new Error('データの読み込みに失敗しました');
-        const data = await response.json();
-        renderData(data);
+        allData = await response.json();
+        renderFilters(allData);
+        renderData(allData, 'all');
       } catch (error) {
         document.getElementById('main-content').innerHTML = 
           `<div class="error">データの読み込みに失敗しました。<br>しばらく経ってから再度お試しください。</div>`;
       }
+    }
+
+    function renderFilters(data) {
+      // 試験区分ごとのカウント
+      const counts = { all: data.history.length };
+      data.history.forEach(item => {
+        counts[item.exam] = (counts[item.exam] || 0) + 1;
+      });
+
+      const exams = ['SAP', 'SAA', 'SOA', 'SCS'].filter(e => counts[e]);
+      
+      let html = '<div class="filter-tabs">';
+      html += `<button class="filter-tab active" onclick="filterByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
+      
+      exams.forEach(exam => {
+        html += `<button class="filter-tab" onclick="filterByExam('${exam}')">${exam}<span class="tab-count">(${counts[exam]})</span></button>`;
+      });
+      
+      html += '</div>';
+      document.getElementById('filter-container').innerHTML = html;
+    }
+
+    function filterByExam(exam) {
+      currentFilter = exam;
+      
+      // タブのアクティブ状態を更新
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.startsWith(exam === 'all' ? 'すべて' : exam)) {
+          tab.classList.add('active');
+        }
+      });
+
+      // フィルタリングしたデータで再描画
+      const filteredData = {
+        stats: allData.stats,
+        history: exam === 'all' 
+          ? allData.history 
+          : allData.history.filter(item => item.exam === exam)
+      };
+      
+      renderData(filteredData, exam);
     }
 
     function formatDate(dateStr) {
@@ -66,10 +114,25 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    function renderData(data) {
+    function renderData(data, filter) {
       // 統計を更新
-      document.getElementById('total-count').textContent = data.stats.total;
-      document.getElementById('month-count').textContent = data.stats.thisMonth;
+      if (filter === 'all') {
+        document.getElementById('total-count').textContent = data.stats.total;
+        document.getElementById('month-count').textContent = data.stats.thisMonth;
+      } else {
+        document.getElementById('total-count').textContent = data.history.length;
+        // 今月のフィルタ済み件数
+        const now = new Date();
+        const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const thisMonthCount = data.history.filter(item => getMonthKey(item.date) === thisMonthKey).length;
+        document.getElementById('month-count').textContent = thisMonthCount;
+      }
+
+      if (data.history.length === 0) {
+        document.getElementById('main-content').innerHTML = 
+          `<div class="loading">${filter}の修正履歴はありません</div>`;
+        return;
+      }
 
       // 月ごと → 日付ごとにグループ化
       const byMonth = {};
