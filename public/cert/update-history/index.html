@@ -55,12 +55,14 @@
         if (!indexRes.ok) throw new Error('index.json の読み込みに失敗');
         indexData = await indexRes.json();
 
-        // 2. 各月のデータを並列で読み込み
+        // 2. 各月のJSONLデータを並列で読み込み
         const monthPromises = indexData.months.map(async (month) => {
-          const res = await fetch(`./data/${month}.json`);
-          if (!res.ok) return { month, history: [] };
-          const data = await res.json();
-          return data;
+          const res = await fetch(`./data/${month}.jsonl`);
+          if (!res.ok) return [];
+          const text = await res.text();
+          // JSONL形式: 1行1JSONオブジェクト
+          const lines = text.trim().split('\n').filter(line => line.trim());
+          return lines.map(line => JSON.parse(line));
         });
 
         const monthDataList = await Promise.all(monthPromises);
@@ -68,9 +70,7 @@
         // 3. 全データを結合
         allHistory = [];
         monthDataList.forEach(data => {
-          if (data.history) {
-            allHistory.push(...data.history);
-          }
+          allHistory.push(...data);
         });
 
         // 4. 日付でソート（新しい順）
@@ -137,12 +137,9 @@
         ? allHistory 
         : allHistory.filter(item => item.exam === filter);
 
-      // 統計を更新
-      if (filter === 'all') {
-        document.getElementById('total-count').textContent = indexData.stats.total;
-      } else {
-        document.getElementById('total-count').textContent = filteredHistory.length;
-      }
+      // 統計を更新（動的に計算）
+      document.getElementById('total-count').textContent = 
+        filter === 'all' ? allHistory.length : filteredHistory.length;
       
       // 今月の件数
       const now = new Date();
