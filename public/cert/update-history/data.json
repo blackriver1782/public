@@ -1,9 +1,21 @@
 {
   "stats": {
-    "total": 22,
-    "thisMonth": 22
+    "total": 24,
+    "thisMonth": 24
   },
   "history": [
+    {
+      "date": "2025-11-27",
+      "id": "SAP-44",
+      "exam": "SAP",
+      "summary": "図解の内容を問題（DynamoDB Acceleratorによるキャッシュ高速化）に合わせて修正しました。"
+    },
+    {
+      "date": "2025-11-27",
+      "id": "SAA-13",
+      "exam": "SAA",
+      "summary": "IAM Identity Centerでは双方向信頼が必須である点を反映し、選択肢と解説を技術的に正しい内容に修正しました。"
+    },
     {
       "date": "2025-11-26",
       "id": "SOA-221",
