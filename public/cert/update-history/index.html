@@ -19,11 +19,11 @@
       
       <div class="stats">
         <div class="stat-item">
-          <div class="stat-number" id="total-count">-</div>
+          <div class="stat-number" id="total-count">0</div>
           <div class="stat-label">修正件数</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number" id="month-count">-</div>
+          <div class="stat-number" id="month-count">0</div>
           <div class="stat-label">今月の修正</div>
         </div>
       </div>
@@ -47,6 +47,34 @@
     let allHistory = [];
     let indexData = null;
     let currentFilter = 'all';
+
+    // カウントアップアニメーション
+    function animateCount(element, targetValue, duration = 800) {
+      const startValue = 0;
+      const startTime = performance.now();
+      
+      element.classList.add('counting');
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // easeOutQuart
+        const eased = 1 - Math.pow(1 - progress, 4);
+        const currentValue = Math.floor(startValue + (targetValue - startValue) * eased);
+        
+        element.textContent = currentValue;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          element.textContent = targetValue;
+          element.classList.remove('counting');
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
 
     async function loadData() {
       try {
@@ -77,7 +105,7 @@
         allHistory.sort((a, b) => b.date.localeCompare(a.date));
 
         renderFilters();
-        renderData('all');
+        renderData('all', true); // 初回はアニメーション付き
       } catch (error) {
         console.error(error);
         document.getElementById('main-content').innerHTML = 
@@ -95,10 +123,10 @@
       const exams = ['SAP', 'SAA', 'SOA', 'SCS', 'DVA', 'ANS', 'DOP', 'AIF', 'DEA', 'MLA', 'MLS'].filter(e => counts[e]);
       
       let html = '<div class="filter-tabs">';
-      html += `<button class="filter-tab active" onclick="filterByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
+      html += `<button class="filter-tab active" data-exam="all" onclick="filterByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
       
       exams.forEach(exam => {
-        html += `<button class="filter-tab" onclick="filterByExam('${exam}')">${exam}<span class="tab-count">(${counts[exam]})</span></button>`;
+        html += `<button class="filter-tab" data-exam="${exam.toLowerCase()}" onclick="filterByExam('${exam}')">${exam}<span class="tab-count">(${counts[exam]})</span></button>`;
       });
       
       html += '</div>';
@@ -111,12 +139,13 @@
       // タブのアクティブ状態を更新
       document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
-        if (tab.textContent.startsWith(exam === 'all' ? 'すべて' : exam)) {
+        const tabExam = tab.getAttribute('data-exam');
+        if (tabExam === (exam === 'all' ? 'all' : exam.toLowerCase())) {
           tab.classList.add('active');
         }
       });
 
-      renderData(exam);
+      renderData(exam, true); // フィルター変更時もアニメーション
     }
 
     function formatDate(dateStr) {
@@ -132,20 +161,29 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    function renderData(filter) {
+    function renderData(filter, animate = false) {
       const filteredHistory = filter === 'all' 
         ? allHistory 
         : allHistory.filter(item => item.exam === filter);
 
       // 統計を更新（動的に計算）
-      document.getElementById('total-count').textContent = 
-        filter === 'all' ? allHistory.length : filteredHistory.length;
+      const totalEl = document.getElementById('total-count');
+      const monthEl = document.getElementById('month-count');
+      
+      const totalCount = filter === 'all' ? allHistory.length : filteredHistory.length;
       
       // 今月の件数
       const now = new Date();
       const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       const thisMonthCount = filteredHistory.filter(item => getMonthKey(item.date) === thisMonthKey).length;
-      document.getElementById('month-count').textContent = thisMonthCount;
+      
+      if (animate) {
+        animateCount(totalEl, totalCount);
+        animateCount(monthEl, thisMonthCount, 600);
+      } else {
+        totalEl.textContent = totalCount;
+        monthEl.textContent = thisMonthCount;
+      }
 
       if (filteredHistory.length === 0) {
         document.getElementById('main-content').innerHTML = 

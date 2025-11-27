@@ -8,6 +8,30 @@
   --border: #e2e8f0;
   --shadow: 0 1px 3px rgba(0,0,0,0.08);
   --orange: #f5a623;
+  
+  /* 試験区分カラー */
+  --color-sap: #d97706;
+  --color-sap-light: #fef3c7;
+  --color-saa: #2563eb;
+  --color-saa-light: #dbeafe;
+  --color-soa: #059669;
+  --color-soa-light: #d1fae5;
+  --color-scs: #db2777;
+  --color-scs-light: #fce7f3;
+  --color-dva: #7c3aed;
+  --color-dva-light: #ede9fe;
+  --color-ans: #0891b2;
+  --color-ans-light: #cffafe;
+  --color-dop: #ea580c;
+  --color-dop-light: #ffedd5;
+  --color-aif: #4f46e5;
+  --color-aif-light: #e0e7ff;
+  --color-dea: #0d9488;
+  --color-dea-light: #ccfbf1;
+  --color-mla: #c026d3;
+  --color-mla-light: #fae8ff;
+  --color-mls: #be123c;
+  --color-mls-light: #ffe4e6;
 }
 
 * {
@@ -30,16 +54,46 @@ body {
   padding: 2.5rem 1.25rem;
 }
 
+/* アニメーション定義 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* ヘッダー */
 header {
   text-align: center;
   margin-bottom: 2.5rem;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 .logo {
   width: 180px;
   height: auto;
   margin-bottom: 1.25rem;
+  animation: scaleIn 0.5s ease-out;
 }
 
 h1 {
@@ -64,13 +118,23 @@ h1 {
 
 .stat-item {
   text-align: center;
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
 }
+
+.stat-item:nth-child(1) { animation-delay: 0.1s; }
+.stat-item:nth-child(2) { animation-delay: 0.2s; }
 
 .stat-number {
   font-size: 2.25rem;
   font-weight: 700;
   color: var(--orange);
   line-height: 1.2;
+  transition: transform 0.3s ease;
+}
+
+.stat-number.counting {
+  transform: scale(1.1);
 }
 
 .stat-label {
@@ -86,6 +150,7 @@ h1 {
   gap: 0.5rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+  animation: fadeIn 0.4s ease-out 0.3s both;
 }
 
 .filter-tab {
@@ -97,18 +162,230 @@ h1 {
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
+/* デフォルト（すべて）のホバー */
 .filter-tab:hover {
   border-color: var(--orange);
   color: var(--orange);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.2);
 }
 
+/* 試験区分ごとのホバー色 */
+.filter-tab[data-exam="sap"]:hover {
+  border-color: var(--color-sap);
+  color: var(--color-sap);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+}
+
+.filter-tab[data-exam="saa"]:hover {
+  border-color: var(--color-saa);
+  color: var(--color-saa);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.filter-tab[data-exam="soa"]:hover {
+  border-color: var(--color-soa);
+  color: var(--color-soa);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
+.filter-tab[data-exam="scs"]:hover {
+  border-color: var(--color-scs);
+  color: var(--color-scs);
+  box-shadow: 0 4px 12px rgba(219, 39, 119, 0.2);
+}
+
+.filter-tab[data-exam="dva"]:hover {
+  border-color: var(--color-dva);
+  color: var(--color-dva);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
+.filter-tab[data-exam="ans"]:hover {
+  border-color: var(--color-ans);
+  color: var(--color-ans);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2);
+}
+
+.filter-tab[data-exam="dop"]:hover {
+  border-color: var(--color-dop);
+  color: var(--color-dop);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+}
+
+.filter-tab[data-exam="aif"]:hover {
+  border-color: var(--color-aif);
+  color: var(--color-aif);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.filter-tab[data-exam="dea"]:hover {
+  border-color: var(--color-dea);
+  color: var(--color-dea);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+}
+
+.filter-tab[data-exam="mla"]:hover {
+  border-color: var(--color-mla);
+  color: var(--color-mla);
+  box-shadow: 0 4px 12px rgba(192, 38, 211, 0.2);
+}
+
+.filter-tab[data-exam="mls"]:hover {
+  border-color: var(--color-mls);
+  color: var(--color-mls);
+  box-shadow: 0 4px 12px rgba(190, 18, 60, 0.2);
+}
+
+/* アクティブ状態 */
 .filter-tab.active {
   background: var(--orange);
   border-color: var(--orange);
   color: white;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(245, 166, 35, 0.3);
+}
+
+/* アクティブ状態のホバー（文字色を白に保つ） */
+.filter-tab.active:hover {
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* 試験区分ごとのアクティブ色 */
+.filter-tab[data-exam="sap"].active {
+  background: var(--color-sap);
+  border-color: var(--color-sap);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+}
+.filter-tab[data-exam="sap"].active:hover {
+  background: var(--color-sap);
+  border-color: var(--color-sap);
+  color: white;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+}
+
+.filter-tab[data-exam="saa"].active {
+  background: var(--color-saa);
+  border-color: var(--color-saa);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+.filter-tab[data-exam="saa"].active:hover {
+  background: var(--color-saa);
+  border-color: var(--color-saa);
+  color: white;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.filter-tab[data-exam="soa"].active {
+  background: var(--color-soa);
+  border-color: var(--color-soa);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+.filter-tab[data-exam="soa"].active:hover {
+  background: var(--color-soa);
+  border-color: var(--color-soa);
+  color: white;
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
+}
+
+.filter-tab[data-exam="scs"].active {
+  background: var(--color-scs);
+  border-color: var(--color-scs);
+  box-shadow: 0 2px 8px rgba(219, 39, 119, 0.3);
+}
+.filter-tab[data-exam="scs"].active:hover {
+  background: var(--color-scs);
+  border-color: var(--color-scs);
+  color: white;
+  box-shadow: 0 6px 16px rgba(219, 39, 119, 0.35);
+}
+
+.filter-tab[data-exam="dva"].active {
+  background: var(--color-dva);
+  border-color: var(--color-dva);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+.filter-tab[data-exam="dva"].active:hover {
+  background: var(--color-dva);
+  border-color: var(--color-dva);
+  color: white;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+}
+
+.filter-tab[data-exam="ans"].active {
+  background: var(--color-ans);
+  border-color: var(--color-ans);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
+}
+.filter-tab[data-exam="ans"].active:hover {
+  background: var(--color-ans);
+  border-color: var(--color-ans);
+  color: white;
+  box-shadow: 0 6px 16px rgba(8, 145, 178, 0.35);
+}
+
+.filter-tab[data-exam="dop"].active {
+  background: var(--color-dop);
+  border-color: var(--color-dop);
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
+}
+.filter-tab[data-exam="dop"].active:hover {
+  background: var(--color-dop);
+  border-color: var(--color-dop);
+  color: white;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+}
+
+.filter-tab[data-exam="aif"].active {
+  background: var(--color-aif);
+  border-color: var(--color-aif);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+.filter-tab[data-exam="aif"].active:hover {
+  background: var(--color-aif);
+  border-color: var(--color-aif);
+  color: white;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+.filter-tab[data-exam="dea"].active {
+  background: var(--color-dea);
+  border-color: var(--color-dea);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+.filter-tab[data-exam="dea"].active:hover {
+  background: var(--color-dea);
+  border-color: var(--color-dea);
+  color: white;
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+
+.filter-tab[data-exam="mla"].active {
+  background: var(--color-mla);
+  border-color: var(--color-mla);
+  box-shadow: 0 2px 8px rgba(192, 38, 211, 0.3);
+}
+.filter-tab[data-exam="mla"].active:hover {
+  background: var(--color-mla);
+  border-color: var(--color-mla);
+  color: white;
+  box-shadow: 0 6px 16px rgba(192, 38, 211, 0.35);
+}
+
+.filter-tab[data-exam="mls"].active {
+  background: var(--color-mls);
+  border-color: var(--color-mls);
+  box-shadow: 0 2px 8px rgba(190, 18, 60, 0.3);
+}
+.filter-tab[data-exam="mls"].active:hover {
+  background: var(--color-mls);
+  border-color: var(--color-mls);
+  color: white;
+  box-shadow: 0 6px 16px rgba(190, 18, 60, 0.35);
 }
 
 .filter-tab .tab-count {
@@ -120,7 +397,16 @@ h1 {
 /* セクション */
 .history-section {
   margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUp 0.5s ease-out forwards;
 }
+
+.history-section:nth-child(1) { animation-delay: 0.1s; }
+.history-section:nth-child(2) { animation-delay: 0.15s; }
+.history-section:nth-child(3) { animation-delay: 0.2s; }
+.history-section:nth-child(4) { animation-delay: 0.25s; }
+.history-section:nth-child(5) { animation-delay: 0.3s; }
 
 .section-header {
   display: flex;
@@ -131,12 +417,13 @@ h1 {
   border-radius: 8px;
   box-shadow: var(--shadow);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.25s ease;
   user-select: none;
 }
 
 .section-header:hover {
   background: #fef6e8;
+  transform: translateX(4px);
 }
 
 .section-left {
@@ -167,7 +454,7 @@ h1 {
   width: 20px;
   height: 20px;
   color: var(--text-muted);
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease;
 }
 
 .history-section.open .section-toggle {
@@ -192,7 +479,16 @@ h1 {
   border-radius: 12px;
   box-shadow: var(--shadow);
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.4s ease-out forwards;
 }
+
+.date-card:nth-child(1) { animation-delay: 0.05s; }
+.date-card:nth-child(2) { animation-delay: 0.1s; }
+.date-card:nth-child(3) { animation-delay: 0.15s; }
+.date-card:nth-child(4) { animation-delay: 0.2s; }
+.date-card:nth-child(5) { animation-delay: 0.25s; }
 
 .date-header {
   display: flex;
@@ -227,6 +523,11 @@ h1 {
   gap: 0.75rem;
   padding: 0.85rem 1.25rem;
   border-bottom: 1px solid var(--border);
+  transition: background 0.2s ease;
+}
+
+.history-item:hover {
+  background: #fafafa;
 }
 
 .history-item:last-child {
@@ -256,10 +557,17 @@ h1 {
   letter-spacing: 0.3px;
 }
 
-.exam-sap { background: #fef3c7; color: #92400e; }
-.exam-saa { background: #dbeafe; color: #1e40af; }
-.exam-soa { background: #d1fae5; color: #065f46; }
-.exam-scs { background: #fce7f3; color: #9d174d; }
+.exam-sap { background: var(--color-sap-light); color: #92400e; }
+.exam-saa { background: var(--color-saa-light); color: #1e40af; }
+.exam-soa { background: var(--color-soa-light); color: #065f46; }
+.exam-scs { background: var(--color-scs-light); color: #9d174d; }
+.exam-dva { background: var(--color-dva-light); color: #5b21b6; }
+.exam-ans { background: var(--color-ans-light); color: #0e7490; }
+.exam-dop { background: var(--color-dop-light); color: #c2410c; }
+.exam-aif { background: var(--color-aif-light); color: #3730a3; }
+.exam-dea { background: var(--color-dea-light); color: #0f766e; }
+.exam-mla { background: var(--color-mla-light); color: #a21caf; }
+.exam-mls { background: var(--color-mls-light); color: #9f1239; }
 
 .item-summary {
   flex: 1;
@@ -276,14 +584,17 @@ footer {
   border-top: 1px solid var(--border);
   color: var(--text-muted);
   font-size: 0.85rem;
+  animation: fadeIn 0.5s ease-out 0.5s both;
 }
 
 footer a {
   color: var(--orange);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 footer a:hover {
+  color: #e09000;
   text-decoration: underline;
 }
 
@@ -292,6 +603,7 @@ footer a:hover {
   text-align: center;
   padding: 3rem;
   color: var(--text-muted);
+  animation: fadeIn 0.3s ease-out;
 }
 
 .error {
@@ -300,6 +612,7 @@ footer a:hover {
   color: #dc2626;
   background: #fef2f2;
   border-radius: 8px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 /* レスポンシブ */
@@ -332,5 +645,8 @@ footer a:hover {
   .item-summary {
     padding-left: 0;
   }
+  
+  .filter-tab:hover {
+    transform: none;
+  }
 }
-
