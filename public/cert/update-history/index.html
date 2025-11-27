@@ -43,30 +43,55 @@
   </div>
 
   <script>
-    let allData = null;
+    let allHistory = [];
+    let indexData = null;
     let currentFilter = 'all';
 
     async function loadData() {
       try {
-        const response = await fetch('./data.json');
-        if (!response.ok) throw new Error('データの読み込みに失敗しました');
-        allData = await response.json();
-        renderFilters(allData);
-        renderData(allData, 'all');
+        // 1. index.json を読み込み
+        const indexRes = await fetch('./index.json');
+        if (!indexRes.ok) throw new Error('index.json の読み込みに失敗');
+        indexData = await indexRes.json();
+
+        // 2. 各月のデータを並列で読み込み
+        const monthPromises = indexData.months.map(async (month) => {
+          const res = await fetch(`./data/${month}.json`);
+          if (!res.ok) return { month, history: [] };
+          const data = await res.json();
+          return data;
+        });
+
+        const monthDataList = await Promise.all(monthPromises);
+        
+        // 3. 全データを結合
+        allHistory = [];
+        monthDataList.forEach(data => {
+          if (data.history) {
+            allHistory.push(...data.history);
+          }
+        });
+
+        // 4. 日付でソート（新しい順）
+        allHistory.sort((a, b) => b.date.localeCompare(a.date));
+
+        renderFilters();
+        renderData('all');
       } catch (error) {
+        console.error(error);
         document.getElementById('main-content').innerHTML = 
           `<div class="error">データの読み込みに失敗しました。<br>しばらく経ってから再度お試しください。</div>`;
       }
     }
 
-    function renderFilters(data) {
+    function renderFilters() {
       // 試験区分ごとのカウント
-      const counts = { all: data.history.length };
-      data.history.forEach(item => {
+      const counts = { all: allHistory.length };
+      allHistory.forEach(item => {
         counts[item.exam] = (counts[item.exam] || 0) + 1;
       });
 
-      const exams = ['SAP', 'SAA', 'SOA', 'SCS'].filter(e => counts[e]);
+      const exams = ['SAP', 'SAA', 'SOA', 'SCS', 'DVA', 'ANS', 'DOP', 'AIF', 'DEA', 'MLA', 'MLS'].filter(e => counts[e]);
       
       let html = '<div class="filter-tabs">';
       html += `<button class="filter-tab active" onclick="filterByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
@@ -90,15 +115,7 @@
         }
       });
 
-      // フィルタリングしたデータで再描画
-      const filteredData = {
-        stats: allData.stats,
-        history: exam === 'all' 
-          ? allData.history 
-          : allData.history.filter(item => item.exam === exam)
-      };
-      
-      renderData(filteredData, exam);
+      renderData(exam);
     }
 
     function formatDate(dateStr) {
@@ -114,21 +131,25 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    function renderData(data, filter) {
+    function renderData(filter) {
+      const filteredHistory = filter === 'all' 
+        ? allHistory 
+        : allHistory.filter(item => item.exam === filter);
+
       // 統計を更新
       if (filter === 'all') {
-        document.getElementById('total-count').textContent = data.stats.total;
-        document.getElementById('month-count').textContent = data.stats.thisMonth;
+        document.getElementById('total-count').textContent = indexData.stats.total;
       } else {
-        document.getElementById('total-count').textContent = data.history.length;
-        // 今月のフィルタ済み件数
-        const now = new Date();
-        const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        const thisMonthCount = data.history.filter(item => getMonthKey(item.date) === thisMonthKey).length;
-        document.getElementById('month-count').textContent = thisMonthCount;
+        document.getElementById('total-count').textContent = filteredHistory.length;
       }
+      
+      // 今月の件数
+      const now = new Date();
+      const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const thisMonthCount = filteredHistory.filter(item => getMonthKey(item.date) === thisMonthKey).length;
+      document.getElementById('month-count').textContent = thisMonthCount;
 
-      if (data.history.length === 0) {
+      if (filteredHistory.length === 0) {
         document.getElementById('main-content').innerHTML = 
           `<div class="loading">${filter}の修正履歴はありません</div>`;
         return;
@@ -136,7 +157,7 @@
 
       // 月ごと → 日付ごとにグループ化
       const byMonth = {};
-      data.history.forEach(item => {
+      filteredHistory.forEach(item => {
         const monthKey = getMonthKey(item.date);
         if (!byMonth[monthKey]) byMonth[monthKey] = {};
         if (!byMonth[monthKey][item.date]) byMonth[monthKey][item.date] = [];
