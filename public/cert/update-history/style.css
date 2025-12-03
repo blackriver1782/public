@@ -40,6 +40,42 @@
   box-sizing: border-box;
 }
 
+/* アナウンスリボン */
+.announcement-ribbon {
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #2563eb 100%);
+  overflow: hidden;
+  position: relative;
+  padding: 0.6rem 0;
+}
+
+.announcement-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+}
+
+.announcement-text {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0 3rem;
+  letter-spacing: 0.02em;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ホバーで一時停止 */
+.announcement-ribbon:hover .announcement-track {
+  animation-play-state: paused;
+}
+
 body {
   font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
