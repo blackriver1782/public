@@ -230,7 +230,8 @@
         
         const dates = Object.keys(byMonth[monthKey]).sort().reverse();
         dates.forEach(date => {
-          const items = byMonth[monthKey][date];
+          // 同じ日付内では最後に追加されたものを上に表示（JSONLの行順を逆順に）
+          const items = byMonth[monthKey][date].slice().reverse();
           const formattedDate = formatDate(date);
           
           html += `
