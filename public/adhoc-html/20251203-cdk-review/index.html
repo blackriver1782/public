@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDKスライド レビュー</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap');
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-orange: #d29922;
+            --accent-purple: #a371f7;
+            --border-color: #30363d;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+        
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .date { color: var(--text-secondary); font-size: 0.85rem; }
+        
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin: 2rem 0 0.8rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+        
+        h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent-purple);
+            margin: 1.2rem 0 0.5rem;
+        }
+        
+        p { margin-bottom: 0.8rem; color: var(--text-secondary); }
+        
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+        }
+        
+        .issue-box {
+            background: linear-gradient(135deg, rgba(248, 81, 73, 0.1) 0%, rgba(210, 153, 34, 0.1) 100%);
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .suggestion-box {
+            background: linear-gradient(135deg, rgba(63, 185, 80, 0.1) 0%, rgba(88, 166, 255, 0.1) 100%);
+            border-left: 4px solid var(--accent-green);
+        }
+        
+        .label {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+        }
+        
+        .label-issue { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); }
+        .label-suggestion { background: rgba(63, 185, 80, 0.2); color: var(--accent-green); }
+        
+        table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.85rem; }
+        th, td { padding: 0.6rem; text-align: left; border: 1px solid var(--border-color); }
+        th { background: var(--bg-tertiary); color: var(--accent-blue); font-weight: 500; }
+        td { background: var(--bg-secondary); }
+        
+        code {
+            font-family: 'Source Code Pro', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--accent-orange);
+        }
+        
+        ul { margin: 0.8rem 0 0.8rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        li { margin-bottom: 0.4rem; }
+        
+        .strikethrough { text-decoration: line-through; color: var(--accent-red); opacity: 0.7; }
+        .highlight { color: var(--accent-green); font-weight: 500; }
+        .arrow { color: var(--accent-orange); display: block; margin: 0.3rem 0; }
+        
+        .flow-diagram {
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .flow-diagram .slide { color: var(--accent-blue); }
+        .flow-diagram .missing { color: var(--accent-red); font-weight: bold; }
+        .flow-diagram .arrow-down { color: var(--text-secondary); }
+        
+        .note-sample {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem 1.2rem;
+            margin-top: 0.8rem;
+        }
+        
+        .note-text {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.7;
+        }
+        
+        .note-text:last-child { margin-bottom: 0; }
+        
+        .note-list {
+            margin: 0.5rem 0 0.8rem 1.2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .note-list li {
+            margin-bottom: 0.3rem;
+            color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 CDKスライド レビュー</h1>
+            <p class="date">2025年12月3日</p>
+        </header>
+
+        <!-- 指摘1: 型補完 -->
+        <h2>指摘① 型補完はCDK独自のメリットではない</h2>
+        
+        <div class="section issue-box">
+            <span class="label label-issue">⚠️ 問題</span>
+            <p>「型補完機能」をCDK独自のメリットとして挙げているが、Terraform/CloudFormationでもIDE拡張で対応可能。</p>
+        </div>
+
+        <h3>各ツールの対応状況</h3>
+        <table>
+            <tr><th>ツール</th><th>IDE補完・チェック</th></tr>
+            <tr><td>Terraform</td><td>VSCode拡張 + <code>terraform validate</code></td></tr>
+            <tr><td>CloudFormation</td><td>VSCode拡張 + <code>cfn-lint</code></td></tr>
+            <tr><td>CDK</td><td>言語ネイティブの型システム</td></tr>
+        </table>
+
+        <div class="section suggestion-box">
+            <span class="label label-suggestion">✏️ 修正案</span>
+            <p><span class="strikethrough">型補完機能で実装前やコーディング中にエラーを検知したい場合</span></p>
+            <span class="arrow">↓</span>
+            <p class="highlight">ループや条件分岐など、プログラミング言語の機能をフルに活用したい場合</p>
+        </div>
+
+        <!-- 指摘2: なぜが足りない -->
+        <h2>指摘② 「なぜ」の説明が足りない</h2>
+        
+        <div class="section issue-box">
+            <span class="label label-issue">⚠️ 問題</span>
+            <p>スライド7（App/Stack/Constructの図）のスピーカーノートが空。また、構成やレイヤーの説明に入る前の「なぜ」の導入がない。</p>
+        </div>
+
+        <h3>「なぜ」が足りない箇所（2箇所）</h3>
+
+        <div class="flow-diagram">
+            <div><span class="slide">スライド5:</span> 「高レベルの抽象化により少量のコード」</div>
+            <div class="arrow-down">　　↓</div>
+            <div class="missing">❌ 「なぜ少量で書けるのか？」の説明がない</div>
+            <div class="arrow-down">　　↓</div>
+            <div><span class="slide">スライド7:</span> App / Stack / Construct の図（ノート空）</div>
+        </div>
+
+        <div class="flow-diagram">
+            <div><span class="slide">スライド7:</span> 「Constructは一つ以上のAWSリソースを定義」</div>
+            <div class="arrow-down">　　↓</div>
+            <div class="missing">❌ 「なぜレイヤーに分かれているのか？」の説明がない</div>
+            <div class="arrow-down">　　↓</div>
+            <div><span class="slide">スライド9:</span> L1 / L2 / L3 コンストラクト</div>
+        </div>
+
+        <h3>修正案❶: 「なぜ少量で書けるのか？」</h3>
+        
+        <div class="section suggestion-box">
+            <span class="label label-suggestion">✏️ スライド7ノートの冒頭に追加</span>
+            <div class="note-sample">
+                <p class="note-text">先ほど比較表で「高レベルの抽象化により少量のコードで書ける」と説明しました。</p>
+                <p class="note-text">では、CDKはどのような仕組みでこれを実現しているのでしょうか？</p>
+                <p class="note-text">CDKには「Construct（コンストラクト）」という部品があり、これが関連するリソースをまとめて作成してくれます。</p>
+                <p class="note-text">例えば、CloudFormationやTerraformでVPCを作成する場合、サブネット、ルートテーブル、インターネットゲートウェイなどを全て明示的に定義する必要がありました。</p>
+                <p class="note-text">しかしCDKでは「VPCを作る」とだけ書けば、AWSのベストプラクティスに沿った構成が自動的に作成されます。これがCDKの「抽象化」です。</p>
+                <p class="note-text">CDKの仕組みを理解するために、3つの構成要素を見ていきましょう。</p>
+            </div>
+        </div>
+
+        <h3>修正案❷: 「なぜレイヤーに分かれているのか？」</h3>
+        
+        <div class="section suggestion-box">
+            <span class="label label-suggestion">✏️ スライド7ノートの末尾に追加</span>
+            <div class="note-sample">
+                <p class="note-text">3つの要素の中で、特に重要なのがConstructです。</p>
+                <p class="note-text">実際の開発では、用途によってニーズが異なります。</p>
+                <ul class="note-list">
+                    <li>「細かい設定をカスタマイズしたい」</li>
+                    <li>「デフォルトのベストプラクティスでOK」</li>
+                    <li>「ECS + ALB + VPCをまとめて一発で作りたい」</li>
+                </ul>
+                <p class="note-text">CDKではこれに対応するため、Constructを<strong>抽象度に応じた3つのレベル（L1/L2/L3）</strong>に分けています。</p>
+                <p class="note-text">次のスライドで、それぞれのレベルについて詳しく見ていきましょう。</p>
+            </div>
+        </div>
+
+        <!-- 指摘3: その他 -->
+        <h2>指摘③ その他</h2>
+        
+        <table>
+            <tr><th>箇所</th><th>内容</th></tr>
+            <tr><td>スライド1ノート</td><td>「記述<span class="strikethrough">用</span>」→「記述<strong>量</strong>」</td></tr>
+            <tr><td>スライド1ノート</td><td>「感じたのではないでしょ<span class="strikethrough">か</span>」→「感じたのではないでしょう<strong>か</strong>」</td></tr>
+            <tr><td>スライド5ノート</td><td>「Terraf<span class="strikethrough">o</span>m」→「Terraf<strong>or</strong>m」</td></tr>
+            <tr><td>スライド19</td><td>タイトルは「cdk synth」だがノートは「cdk deploy」の説明</td></tr>
+        </table>
+
+        <!-- まとめ -->
+        <h2>まとめ</h2>
+        <div class="section">
+            <ul>
+                <li><strong>型補完</strong> → CDK独自メリットとして弱い。「プログラミング言語の機能をフル活用」に置き換え</li>
+                <li><strong>なぜの説明</strong> → スライド7のノートに「なぜ少量で書けるか」「なぜレイヤーがあるか」を追加</li>
+                <li><strong>誤字脱字</strong> → 記述量、Terraform など修正</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
