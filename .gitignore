@@ -50,3 +50,6 @@ google-calendar-mcp/token.json
 # public 配下でも macOS の一時ファイルは追跡しない
 /public/**/.DS_Store
 /public/**/._*
+
+# 画像はCloudflare R2で管理するためGit追跡対象外
+/public/cert/answer-image/
