@@ -1,0 +1,60 @@
+# AWS 3D構成図 定義ファイル
+name: "Sprint1 Architecture"
+description: "基本的なWeb2層構成（ALB + EC2）"
+
+# VPC外のリソース
+external:
+  - user: ブラウザ
+    icon: 🧑‍💻
+
+# VPCリソース
+resources:
+  - vpc: my-vpc
+    cidr: 10.0.0.0/16
+    
+    # VPCにアタッチされるゲートウェイ（上面に配置）
+    igw: my-igw
+    
+    children:
+      # ALB（サブネットの上層に配置）
+      - alb: my-alb
+        scheme: internet-facing
+        
+      # サブネット
+      - subnet: public-subnet-1a
+        cidr: 10.0.1.0/24
+        az: ap-northeast-1a
+        type: public
+        children:
+          - ec2: web-server-1a
+            type: t3.micro
+            
+      - subnet: public-subnet-1c
+        cidr: 10.0.2.0/24
+        az: ap-northeast-1c
+        type: public
+        children:
+          - ec2: web-server-1c
+            type: t3.micro
+
+# 接続線
+connections:
+  - from: ブラウザ
+    to: my-igw
+    label: "HTTP/HTTPS"
+    style: solid
+    
+  - from: my-igw
+    to: my-alb
+    label: ""
+    style: solid
+    
+  - from: my-alb
+    to: web-server-1a
+    label: "port 80"
+    style: solid
+    
+  - from: my-alb
+    to: web-server-1c
+    label: "port 80"
+    style: solid

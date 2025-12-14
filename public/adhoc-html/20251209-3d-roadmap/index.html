@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AWS学習ロードマップ 3D</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">INITIALIZING</div>
+    </div>
+
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Header UI -->
+    <div class="ui-overlay header">
+        <div>
+            <div class="logo">AWS LEARNING ROADMAP</div>
+            <div class="logo-sub">3D INTERACTIVE EXPERIENCE</div>
+        </div>
+        <div class="controls">
+            <button class="btn btn-back" id="btn-back">← 戻る</button>
+            <button class="btn btn-secondary" id="btn-overview">🌌 全体を見る</button>
+            <button class="btn btn-primary" id="btn-focus">🎯 開く</button>
+        </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="category-nav" id="category-nav"></div>
+
+    <!-- Info Panel -->
+    <div class="ui-overlay category-info" id="category-panel">
+        <div class="category-header">
+            <div class="category-icon" id="category-icon">🚀</div>
+            <div>
+                <div class="category-title" id="category-title">Sprint 1</div>
+                <div class="category-subtitle" id="category-subtitle">AWS入門・基礎固め</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Hints -->
+    <div class="nav-hints">
+        <div class="nav-hint">
+            <span class="key-icon">←</span>
+            <span class="key-icon">→</span>
+            <span>移動</span>
+        </div>
+        <div class="nav-hint">
+            <span class="key-icon">ENTER</span>
+            <span>開く</span>
+        </div>
+        <div class="nav-hint">
+            <span class="key-icon">ESC</span>
+            <span>戻る</span>
+        </div>
+        <div class="nav-hint">
+            <span class="key-icon">DRAG</span>
+            <span>視点回転</span>
+        </div>
+    </div>
+
+    <!-- Touch Controls for Mobile -->
+    <div class="touch-controls">
+        <button class="touch-btn" id="touch-prev">◀</button>
+        <button class="touch-btn" id="touch-next">▶</button>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Application -->
+    <script src="app.js"></script>
+</body>
+</html>

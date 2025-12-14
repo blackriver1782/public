@@ -1,0 +1,181 @@
+{
+  "sprints": [
+    {
+      "id": "sprint-1",
+      "title": "Sprint 1",
+      "subtitle": "AWS入門・基礎固め",
+      "icon": "🚀",
+      "color": "#ff6b6b",
+      "position": { "x": -30, "y": 0, "z": 0 },
+      "architectureImage": "sprint1-image.png",
+      "categories": [
+        {
+          "id": "web-basics",
+          "title": "Web Service Basics",
+          "subtitle": "基礎知識",
+          "icon": "🌐",
+          "color": "#ff6b6b",
+          "lessons": [
+            "サーバーとは",
+            "データセンターとは",
+            "基本的なハードウェアリソース（CPU,メモリ,ストレージ,NIC）",
+            "OSとは",
+            "ソフトウェアとは",
+            "Linuxとは",
+            "GUIとCUI",
+            "DNSとドメインの基礎",
+            "静的コンテンツと動的コンテンツの違い",
+            "プログラミング言語とデータベースの役割",
+            "APIとは",
+            "3層アーキテクチャとは",
+            "基本的な性能指標",
+            "DHCPサーバー他非機能要件サーバーの役割"
+          ]
+        },
+        {
+          "id": "network-basics",
+          "title": "Network Basics",
+          "subtitle": "ネットワーク基礎",
+          "icon": "🔗",
+          "color": "#4ecdc4",
+          "lessons": [
+            "2進数",
+            "IPアドレス",
+            "サブネット",
+            "CIDR表記",
+            "ルーティング"
+          ]
+        },
+        {
+          "id": "aws-basics",
+          "title": "AWS Basics",
+          "subtitle": "AWS基礎",
+          "icon": "☁️",
+          "color": "#ff9f43",
+          "lessons": [
+            "AWSとは",
+            "サーバー調達のリードタイム",
+            "グローバルインフラストラクチャ",
+            "アベイラビリティーゾーン",
+            "エッジロケーション",
+            "従量課金",
+            "マルチAZ",
+            "責任共有モデル",
+            "クラウドコンピューティングの6つの長所"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sprint-2",
+      "title": "Sprint 2",
+      "subtitle": "コンピューティング・ストレージ",
+      "icon": "💻",
+      "color": "#a55eea",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "architectureImage": "sprint2-image.png",
+      "categories": [
+        {
+          "id": "compute",
+          "title": "Compute",
+          "subtitle": "コンピューティング",
+          "icon": "💻",
+          "color": "#a55eea",
+          "lessons": [
+            "EC2とは",
+            "インスタンスタイプ",
+            "AMI（Amazon Machine Image）",
+            "セキュリティグループ",
+            "キーペア",
+            "Elastic IP",
+            "EBS（Elastic Block Store）",
+            "Auto Scaling",
+            "Lambda",
+            "Elastic Beanstalk"
+          ]
+        },
+        {
+          "id": "storage",
+          "title": "Storage",
+          "subtitle": "ストレージ",
+          "icon": "💾",
+          "color": "#26de81",
+          "lessons": [
+            "S3とは",
+            "S3バケットポリシー",
+            "S3ライフサイクル",
+            "S3バージョニング",
+            "S3ストレージクラス",
+            "EFS（Elastic File System）",
+            "Storage Gateway",
+            "Snow Family"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sprint-3",
+      "title": "Sprint 3",
+      "subtitle": "データベース・ネットワーキング",
+      "icon": "🗄️",
+      "color": "#00d2d3",
+      "position": { "x": 30, "y": 0, "z": 0 },
+      "architectureImage": null,
+      "categories": [
+        {
+          "id": "database",
+          "title": "Database",
+          "subtitle": "データベース",
+          "icon": "🗄️",
+          "color": "#fd79a8",
+          "lessons": [
+            "RDSとは",
+            "マルチAZデプロイメント",
+            "リードレプリカ",
+            "Aurora",
+            "DynamoDB",
+            "ElastiCache",
+            "Redshift"
+          ]
+        },
+        {
+          "id": "networking",
+          "title": "Networking",
+          "subtitle": "ネットワーキング",
+          "icon": "🌍",
+          "color": "#00d2d3",
+          "lessons": [
+            "VPCとは",
+            "サブネット設計",
+            "インターネットゲートウェイ",
+            "NATゲートウェイ",
+            "ルートテーブル",
+            "VPCピアリング",
+            "VPCエンドポイント",
+            "Route 53",
+            "CloudFront",
+            "ELB（Elastic Load Balancing）"
+          ]
+        },
+        {
+          "id": "security",
+          "title": "Security",
+          "subtitle": "セキュリティ",
+          "icon": "🔐",
+          "color": "#f368e0",
+          "lessons": [
+            "IAMとは",
+            "IAMポリシー",
+            "IAMロール",
+            "MFA（多要素認証）",
+            "AWS Organizations",
+            "KMS（Key Management Service）",
+            "CloudTrail",
+            "Config",
+            "GuardDuty"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,516 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #0a0a0f;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+#canvas-container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* ============================================
+   UI Overlay
+   ============================================ */
+.ui-overlay {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.ui-overlay > * {
+    pointer-events: auto;
+}
+
+/* ============================================
+   Header
+   ============================================ */
+.header {
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.9) 0%, transparent 100%);
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #00d4ff, #7b2fff, #ff2d92);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+}
+
+.logo-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 4px;
+    margin-top: 2px;
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #00d4ff, #7b2fff);
+    color: white;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,212,255,0.6);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.4);
+}
+
+.btn-back {
+    background: rgba(255,100,100,0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(255,100,100,0.3);
+    display: none;
+}
+
+.btn-back:hover {
+    background: rgba(255,100,100,0.3);
+}
+
+/* ============================================
+   Info Panel
+   ============================================ */
+.category-info {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 30px;
+    background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, transparent 100%);
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.category-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 0 20px currentColor;
+}
+
+.category-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 3px;
+}
+
+.progress-bar {
+    width: 100%;
+    max-width: 400px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+/* ============================================
+   Navigation Hints
+   ============================================ */
+.nav-hints {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+}
+
+.nav-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+}
+
+.key-icon {
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+}
+
+/* ============================================
+   Navigation Dots
+   ============================================ */
+.category-nav {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+}
+
+.nav-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-dot:hover {
+    background: rgba(255,255,255,0.4);
+    transform: scale(1.2);
+}
+
+.nav-dot.active {
+    box-shadow: 0 0 15px currentColor;
+}
+
+.nav-dot::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.nav-dot:hover::after {
+    opacity: 1;
+}
+
+/* ============================================
+   Loading Screen
+   ============================================ */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0a0f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #00d4ff;
+    margin-top: 20px;
+    letter-spacing: 4px;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0,212,255,0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Sprint Labels (3D)
+   ============================================ */
+.sprint-label-3d {
+    text-align: center;
+    pointer-events: none;
+}
+
+.sprint-label-3d .sprint-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.sprint-label-3d .sprint-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: block;
+    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+}
+
+.sprint-label-3d .sprint-subtitle {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    display: block;
+    margin-top: 4px;
+}
+
+/* ============================================
+   Category Labels (3D)
+   ============================================ */
+.category-label-3d {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 0 15px currentColor;
+    pointer-events: none;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.category-label-3d .subtitle {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.7;
+    display: block;
+    margin-top: 3px;
+    text-shadow: none;
+}
+
+/* ============================================
+   Lesson Labels (3D) - Tree Style
+   ============================================ */
+.lesson-label-3d {
+    background: rgba(10, 10, 20, 0.9);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lesson-label-3d:hover {
+    background: rgba(30, 30, 50, 0.95);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.lesson-label-3d .lesson-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+}
+
+.lesson-label-3d.completed {
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+.lesson-label-3d.completed .lesson-number::before {
+    content: '✓';
+    font-size: 8px;
+}
+
+/* ============================================
+   Architecture Image Label
+   ============================================ */
+.architecture-label {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(10, 10, 20, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   Touch Controls (Mobile)
+   ============================================ */
+.touch-controls {
+    display: none;
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.touch-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+}
+
+.touch-btn:active {
+    background: rgba(0,212,255,0.3);
+    border-color: #00d4ff;
+    transform: scale(0.95);
+}
+
+/* ============================================
+   Mobile Adjustments
+   ============================================ */
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .controls {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.75rem;
+    }
+    
+    .category-info {
+        padding: 15px 20px;
+    }
+    
+    .category-title {
+        font-size: 1.3rem;
+    }
+    
+    .nav-hints {
+        display: none;
+    }
+    
+    .category-nav {
+        right: 15px;
+    }
+    
+    .lesson-label-3d {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .touch-controls {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .sprint-label-3d .sprint-title {
+        font-size: 1rem;
+    }
+    
+    .sprint-label-3d .sprint-icon {
+        font-size: 1.5rem;
+    }
+}
