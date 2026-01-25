@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>問題集 修正履歴 | CloudTech</title>
+  <title>更新履歴 | CloudTech</title>
   <link rel="icon" href="../../CloudTech-icon/CloudTech-3-logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,24 +11,40 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <!-- アナウンスリボン -->
+  <!-- アナウンスリボン（一時非表示）
   <div class="announcement-ribbon">
     <div class="announcement-track">
       <span class="announcement-text">🎬 2025年12月13日：<a href="https://kws-cloud-tech.com/detail-certification" target="_blank">「ソラとカナタの解説動画」の提供開始！順次アップしていきます！</a></span>
       <span class="announcement-text">📢 2025年12月3日：解説エリアに「改善リクエストボタン」を設置しました。この対応によりコメント欄はクローズといたしました。</span>
-      <span class="announcement-text">🎬 2025年12月13日：<a href="https://kws-cloud-tech.com/detail-certification" target="_blank">「ソラとカナタの解説動画」の提供開始！順次アップしていきます！</a></span>
-      <span class="announcement-text">📢 2025年12月3日：解説エリアに「改善リクエストボタン」を設置しました。この対応によりコメント欄はクローズといたしました。</span>
     </div>
   </div>
+  -->
 
   <div class="container">
     <header>
       <img src="../../CloudTech-icon/CloudTech-1-trans.png" alt="CloudTech" class="logo">
-      <h1>📝 問題集 修正履歴</h1>
-      <p class="subtitle">ユーザーの皆さまからのフィードバックを元に修正した履歴です</p>
       
-      <!-- 今後の対応予定カード -->
-      <div class="notice-card">
+      <!-- メインタブ -->
+      <div class="main-tabs">
+        <button class="main-tab active" data-mode="exam" onclick="switchMode('exam')">
+          <span class="main-tab-icon">📝</span>
+          <span class="main-tab-label">問題集 修正履歴</span>
+        </button>
+        <button class="main-tab" data-mode="video" onclick="switchMode('video')">
+          <span class="main-tab-icon">🎬</span>
+          <span class="main-tab-label">レッスン動画 更新履歴</span>
+        </button>
+      </div>
+      
+      <p class="subtitle" id="subtitle-text">ユーザーの皆さまからのフィードバックを元に修正した履歴です</p>
+      
+      <!-- レッスン動画用の注意書き -->
+      <div class="video-notice" id="video-notice" style="display: none;">
+        <p style="font-size: 0.85rem; color: #666; margin: 0.5rem 0;">*リンク先がCloudTech有料会員専用ページの場合、未ログイン状態の方はコース案内ページに遷移します。<a href="https://kws-cloud-tech.com/login-2" target="_blank">ログイン後</a>にご確認ください。</p>
+      </div>
+      
+      <!-- 今後の対応予定カード（問題集のみ表示） -->
+      <div class="notice-card" id="notice-card">
         <div class="notice-header">
           <span class="notice-icon">📋</span>
           <span class="notice-title">今後の対応予定</span>
@@ -37,18 +53,17 @@
           <p>現在、試験に設定されている細分化されたカテゴリを、より大きな分野での単位に見直しております。</p>
           <p>そのため、現在20ほどあるカテゴリが4つほどに大きくまとまります。</p>
           <p>カテゴリが細かいとメンテナンスが大変であるため、ご理解いただけますと幸いです。<br><span class="notice-note">（本試験の出題配分は分野単位となります）</span></p>
-          <p class="notice-schedule">🗓️ この対応は <strong>2026年1月31日まで</strong> を予定しています。</p>
         </div>
       </div>
 
       <div class="stats">
         <div class="stat-item">
           <div class="stat-number" id="total-count">0</div>
-          <div class="stat-label">修正件数</div>
+          <div class="stat-label" id="stat-label-total">修正件数</div>
         </div>
         <div class="stat-item">
           <div class="stat-number" id="month-count">0</div>
-          <div class="stat-label">今月の修正</div>
+          <div class="stat-label">今月の更新</div>
         </div>
       </div>
     </header>
@@ -60,7 +75,7 @@
     </main>
 
     <footer>
-      <p>ご不明点や誤りのご報告は、各問題ページのコメント欄よりお知らせください。</p>
+      <p id="footer-text">ご不明点や誤りのご報告は、各問題ページのコメント欄よりお知らせください。</p>
       <p style="margin-top: 0.5rem;">
         <a href="https://kws-cloud-tech.com/" target="_blank">CloudTech トップページへ戻る</a>
       </p>
@@ -68,8 +83,10 @@
   </div>
 
   <script>
-    let allHistory = [];
+    let examHistory = [];
+    let videoHistory = [];
     let indexData = null;
+    let currentMode = 'exam'; // 'exam' or 'video'
     let currentFilter = 'all';
 
     // カウントアップアニメーション
@@ -107,29 +124,39 @@
         if (!indexRes.ok) throw new Error('index.json の読み込みに失敗');
         indexData = await indexRes.json();
 
-        // 2. 各月のJSONLデータを並列で読み込み
-        const monthPromises = indexData.months.map(async (month) => {
+        // 2. 試験データを読み込み
+        const examPromises = indexData.exam.months.map(async (month) => {
           const res = await fetch(`./data/${month}.jsonl`);
           if (!res.ok) return [];
           const text = await res.text();
-          // JSONL形式: 1行1JSONオブジェクト
           const lines = text.trim().split('\n').filter(line => line.trim());
           return lines.map(line => JSON.parse(line));
         });
 
-        const monthDataList = await Promise.all(monthPromises);
-        
-        // 3. 全データを結合
-        allHistory = [];
-        monthDataList.forEach(data => {
-          allHistory.push(...data);
+        // 3. 動画データを読み込み
+        const videoPromises = indexData.video.months.map(async (month) => {
+          const res = await fetch(`./video/${month}.jsonl`);
+          if (!res.ok) return [];
+          const text = await res.text();
+          const lines = text.trim().split('\n').filter(line => line.trim());
+          return lines.map(line => JSON.parse(line));
         });
 
-        // 4. 日付でソート（新しい順）
-        allHistory.sort((a, b) => b.date.localeCompare(a.date));
+        const [examDataList, videoDataList] = await Promise.all([
+          Promise.all(examPromises),
+          Promise.all(videoPromises)
+        ]);
+        
+        // 4. 全データを結合
+        examHistory = [];
+        examDataList.forEach(data => examHistory.push(...data));
+        examHistory.sort((a, b) => b.date.localeCompare(a.date));
 
-        renderFilters();
-        renderData('all', true); // 初回はアニメーション付き
+        videoHistory = [];
+        videoDataList.forEach(data => videoHistory.push(...data));
+        videoHistory.sort((a, b) => b.date.localeCompare(a.date));
+
+        renderCurrentMode(true);
       } catch (error) {
         console.error(error);
         document.getElementById('main-content').innerHTML = 
@@ -137,30 +164,76 @@
       }
     }
 
-    function renderFilters() {
-      // 試験区分ごとのカウント
-      const counts = { all: allHistory.length };
-      allHistory.forEach(item => {
+    function switchMode(mode) {
+      currentMode = mode;
+      currentFilter = 'all';
+      
+      // メインタブのアクティブ状態を更新
+      document.querySelectorAll('.main-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-mode') === mode) {
+          tab.classList.add('active');
+        }
+      });
+
+      // UI要素の更新
+      const noticeCard = document.getElementById('notice-card');
+      const subtitleText = document.getElementById('subtitle-text');
+      const statLabelTotal = document.getElementById('stat-label-total');
+      const footerText = document.getElementById('footer-text');
+
+      const videoNotice = document.getElementById('video-notice');
+
+      if (mode === 'exam') {
+        noticeCard.style.display = 'block';
+        videoNotice.style.display = 'none';
+        subtitleText.textContent = 'ユーザーの皆さまからのフィードバックを元に修正した履歴です';
+        statLabelTotal.textContent = '修正件数';
+        footerText.textContent = 'ご不明点や誤りのご報告は、各問題ページのコメント欄よりお知らせください。';
+      } else {
+        noticeCard.style.display = 'none';
+        videoNotice.style.display = 'block';
+        subtitleText.textContent = 'CloudTech動画教材の更新履歴です';
+        statLabelTotal.textContent = '更新件数';
+        footerText.textContent = 'ご不明点がございましたら、お気軽にお問い合わせください。';
+      }
+
+      renderCurrentMode(true);
+    }
+
+    function renderCurrentMode(animate = false) {
+      if (currentMode === 'exam') {
+        renderExamFilters();
+        renderExamData('all', animate);
+      } else {
+        renderVideoFilters();
+        renderVideoData('all', animate);
+      }
+    }
+
+    // ===== 問題集用 =====
+    function renderExamFilters() {
+      const counts = { all: examHistory.length };
+      examHistory.forEach(item => {
         counts[item.exam] = (counts[item.exam] || 0) + 1;
       });
 
       const exams = ['SAP', 'SAA', 'SOA', 'SCS', 'DVA', 'ANS', 'DOP', 'AIF', 'DEA', 'MLA', 'MLS'].filter(e => counts[e]);
       
       let html = '<div class="filter-tabs">';
-      html += `<button class="filter-tab active" data-exam="all" onclick="filterByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
+      html += `<button class="filter-tab active" data-exam="all" onclick="filterExamByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
       
       exams.forEach(exam => {
-        html += `<button class="filter-tab" data-exam="${exam.toLowerCase()}" onclick="filterByExam('${exam}')">${exam}<span class="tab-count">(${counts[exam]})</span></button>`;
+        html += `<button class="filter-tab" data-exam="${exam.toLowerCase()}" onclick="filterExamByExam('${exam}')">${exam}<span class="tab-count">(${counts[exam]})</span></button>`;
       });
       
       html += '</div>';
       document.getElementById('filter-container').innerHTML = html;
     }
 
-    function filterByExam(exam) {
+    function filterExamByExam(exam) {
       currentFilter = exam;
       
-      // タブのアクティブ状態を更新
       document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
         const tabExam = tab.getAttribute('data-exam');
@@ -169,45 +242,15 @@
         }
       });
 
-      renderData(exam, true); // フィルター変更時もアニメーション
+      renderExamData(exam, true);
     }
 
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      return `${year}/${month}/${day}`;
-    }
-
-    function getMonthKey(dateStr) {
-      const date = new Date(dateStr);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    }
-
-    function renderData(filter, animate = false) {
+    function renderExamData(filter, animate = false) {
       const filteredHistory = filter === 'all' 
-        ? allHistory 
-        : allHistory.filter(item => item.exam === filter);
+        ? examHistory 
+        : examHistory.filter(item => item.exam === filter);
 
-      // 統計を更新（動的に計算）
-      const totalEl = document.getElementById('total-count');
-      const monthEl = document.getElementById('month-count');
-      
-      const totalCount = filter === 'all' ? allHistory.length : filteredHistory.length;
-      
-      // 今月の件数
-      const now = new Date();
-      const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const thisMonthCount = filteredHistory.filter(item => getMonthKey(item.date) === thisMonthKey).length;
-      
-      if (animate) {
-        animateCount(totalEl, totalCount);
-        animateCount(monthEl, thisMonthCount, 600);
-      } else {
-        totalEl.textContent = totalCount;
-        monthEl.textContent = thisMonthCount;
-      }
+      updateStats(filteredHistory, filter === 'all' ? examHistory.length : filteredHistory.length, animate);
 
       if (filteredHistory.length === 0) {
         document.getElementById('main-content').innerHTML = 
@@ -231,11 +274,7 @@
       sortedMonths.forEach((monthKey, index) => {
         const [year, month] = monthKey.split('-');
         const monthName = `${year}年${parseInt(month)}月`;
-        
-        // この月の総件数を計算
         const monthTotal = Object.values(byMonth[monthKey]).reduce((sum, items) => sum + items.length, 0);
-        
-        // 最新の月は開いた状態にする
         const isOpen = index === 0 ? 'open' : '';
         
         html += `
@@ -254,7 +293,6 @@
         
         const dates = Object.keys(byMonth[monthKey]).sort().reverse();
         dates.forEach(date => {
-          // 同じ日付内では最後に追加されたものを上に表示（JSONLの行順を逆順に）
           const items = byMonth[monthKey][date].slice().reverse();
           const formattedDate = formatDate(date);
           
@@ -292,6 +330,173 @@
       });
 
       document.getElementById('main-content').innerHTML = html;
+    }
+
+    // ===== 動画用 =====
+    function renderVideoFilters() {
+      const counts = { all: videoHistory.length };
+      videoHistory.forEach(item => {
+        counts[item.category] = (counts[item.category] || 0) + 1;
+      });
+
+      const categories = ['講座追加', '講座更新', '問題集更新', 'サイト更新', '機能追加'].filter(c => counts[c]);
+      
+      let html = '<div class="filter-tabs">';
+      html += `<button class="filter-tab active" data-category="all" onclick="filterVideoByCategory('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
+      
+      categories.forEach(cat => {
+        html += `<button class="filter-tab" data-category="${cat}" onclick="filterVideoByCategory('${cat}')">${cat}<span class="tab-count">(${counts[cat]})</span></button>`;
+      });
+      
+      html += '</div>';
+      document.getElementById('filter-container').innerHTML = html;
+    }
+
+    function filterVideoByCategory(category) {
+      currentFilter = category;
+      
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-category') === category) {
+          tab.classList.add('active');
+        }
+      });
+
+      renderVideoData(category, true);
+    }
+
+    function renderVideoData(filter, animate = false) {
+      const filteredHistory = filter === 'all' 
+        ? videoHistory 
+        : videoHistory.filter(item => item.category === filter);
+
+      updateStats(filteredHistory, filter === 'all' ? videoHistory.length : filteredHistory.length, animate);
+
+      if (filteredHistory.length === 0) {
+        document.getElementById('main-content').innerHTML = 
+          `<div class="loading">更新履歴はありません</div>`;
+        return;
+      }
+
+      // 月ごと → 日付ごとにグループ化
+      const byMonth = {};
+      filteredHistory.forEach(item => {
+        const monthKey = getMonthKey(item.date);
+        if (!byMonth[monthKey]) byMonth[monthKey] = {};
+        if (!byMonth[monthKey][item.date]) byMonth[monthKey][item.date] = [];
+        byMonth[monthKey][item.date].push(item);
+      });
+
+      // HTML生成
+      let html = '';
+      const sortedMonths = Object.keys(byMonth).sort().reverse();
+      
+      sortedMonths.forEach((monthKey, index) => {
+        const [year, month] = monthKey.split('-');
+        const monthName = `${year}年${parseInt(month)}月`;
+        const monthTotal = Object.values(byMonth[monthKey]).reduce((sum, items) => sum + items.length, 0);
+        const isOpen = index === 0 ? 'open' : '';
+        
+        html += `
+          <section class="history-section ${isOpen}">
+            <div class="section-header" onclick="toggleSection(this)">
+              <div class="section-left">
+                <h2 class="section-title">${monthName}</h2>
+                <span class="section-count">${monthTotal}件</span>
+              </div>
+              <svg class="section-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            <div class="history-list">
+        `;
+        
+        const dates = Object.keys(byMonth[monthKey]).sort().reverse();
+        dates.forEach(date => {
+          const items = byMonth[monthKey][date].slice().reverse();
+          const formattedDate = formatDate(date);
+          
+          html += `
+            <div class="date-card">
+              <div class="date-header">
+                <span class="date-badge">${formattedDate}</span>
+                <span class="date-count">${items.length}件の更新</span>
+              </div>
+              <div class="items-list">
+          `;
+          
+          items.forEach(item => {
+            const categoryClass = getCategoryClass(item.category);
+            const titleHtml = item.url 
+              ? `<a href="${item.url}" target="_blank" class="video-title-link">${item.title}</a>`
+              : `<span class="video-title">${item.title}</span>`;
+            
+            html += `
+              <div class="history-item video-item">
+                <div class="video-item-header">
+                  <span class="category-badge ${categoryClass}">${item.category}</span>
+                  ${item.title ? titleHtml : ''}
+                </div>
+                <p class="item-summary">${item.summary}</p>
+              </div>
+            `;
+          });
+          
+          html += `
+              </div>
+            </div>
+          `;
+        });
+        
+        html += `
+            </div>
+          </section>
+        `;
+      });
+
+      document.getElementById('main-content').innerHTML = html;
+    }
+
+    function getCategoryClass(category) {
+      const map = {
+        '講座追加': 'cat-add',
+        '講座更新': 'cat-update',
+        '問題集更新': 'cat-exam',
+        'サイト更新': 'cat-site',
+        '機能追加': 'cat-feature'
+      };
+      return map[category] || 'cat-default';
+    }
+
+    // ===== 共通 =====
+    function updateStats(filteredHistory, totalCount, animate) {
+      const totalEl = document.getElementById('total-count');
+      const monthEl = document.getElementById('month-count');
+      
+      const now = new Date();
+      const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const thisMonthCount = filteredHistory.filter(item => getMonthKey(item.date) === thisMonthKey).length;
+      
+      if (animate) {
+        animateCount(totalEl, totalCount);
+        animateCount(monthEl, thisMonthCount, 600);
+      } else {
+        totalEl.textContent = totalCount;
+        monthEl.textContent = thisMonthCount;
+      }
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `${year}/${month}/${day}`;
+    }
+
+    function getMonthKey(dateStr) {
+      const date = new Date(dateStr);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
     function toggleSection(header) {
