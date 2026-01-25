@@ -825,9 +825,74 @@ footer a:hover {
 .cat-add { background: #dcfce7; color: #166534; }
 .cat-update { background: #dbeafe; color: #1e40af; }
 .cat-exam { background: #fef3c7; color: #92400e; }
-.cat-site { background: #fce7f3; color: #9d174d; }
+.cat-other { background: #f1f5f9; color: #475569; }
 .cat-feature { background: #ede9fe; color: #5b21b6; }
 .cat-default { background: #f1f5f9; color: #475569; }
+
+/* 解説者バッジ */
+.instructor-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #e0f2fe;
+  color: #0369a1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.instructor-badge:hover {
+  background: #0ea5e9;
+  color: white;
+}
+
+/* 解説者フィルター */
+.instructor-filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  animation: fadeIn 0.4s ease-out 0.35s both;
+}
+
+.instructor-filter-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.instructor-tag {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #bae6fd;
+  border-radius: 16px;
+  background: #f0f9ff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #0369a1;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.instructor-tag:hover {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  transform: translateY(-1px);
+}
+
+.instructor-tag.active {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: white;
+}
+
+.instructor-tag .inst-count {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-left: 0.2rem;
+}
 
 .video-title-link {
   color: var(--primary);

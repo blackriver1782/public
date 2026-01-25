@@ -206,8 +206,9 @@
         renderExamFilters();
         renderExamData('all', animate);
       } else {
+        currentInstructorFilter = 'all';
         renderVideoFilters();
-        renderVideoData('all', animate);
+        renderVideoData('all', 'all', animate);
       }
     }
 
@@ -333,22 +334,42 @@
     }
 
     // ===== 動画用 =====
+    let currentInstructorFilter = 'all';
+
     function renderVideoFilters() {
-      const counts = { all: videoHistory.length };
+      const categoryCounts = { all: videoHistory.length };
+      const instructorCounts = {};
+      
       videoHistory.forEach(item => {
-        counts[item.category] = (counts[item.category] || 0) + 1;
+        categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
+        if (item.instructor) {
+          instructorCounts[item.instructor] = (instructorCounts[item.instructor] || 0) + 1;
+        }
       });
 
-      const categories = ['講座追加', '講座更新', '問題集更新', 'サイト更新', '機能追加'].filter(c => counts[c]);
+      const categories = ['講座追加', '講座更新', '問題集更新', 'その他', '機能追加'].filter(c => categoryCounts[c]);
+      const instructors = Object.keys(instructorCounts).sort();
       
       let html = '<div class="filter-tabs">';
-      html += `<button class="filter-tab active" data-category="all" onclick="filterVideoByCategory('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
+      html += `<button class="filter-tab active" data-category="all" onclick="filterVideoByCategory('all')">すべて<span class="tab-count">(${categoryCounts.all})</span></button>`;
       
       categories.forEach(cat => {
-        html += `<button class="filter-tab" data-category="${cat}" onclick="filterVideoByCategory('${cat}')">${cat}<span class="tab-count">(${counts[cat]})</span></button>`;
+        html += `<button class="filter-tab" data-category="${cat}" onclick="filterVideoByCategory('${cat}')">${cat}<span class="tab-count">(${categoryCounts[cat]})</span></button>`;
       });
       
       html += '</div>';
+
+      // 解説者フィルター
+      if (instructors.length > 0) {
+        html += '<div class="instructor-filter">';
+        html += '<span class="instructor-filter-label">解説者：</span>';
+        html += `<button class="instructor-tag active" data-instructor="all" onclick="filterVideoByInstructor('all')">すべて</button>`;
+        instructors.forEach(inst => {
+          html += `<button class="instructor-tag" data-instructor="${inst}" onclick="filterVideoByInstructor('${inst}')">${inst}<span class="inst-count">(${instructorCounts[inst]})</span></button>`;
+        });
+        html += '</div>';
+      }
+
       document.getElementById('filter-container').innerHTML = html;
     }
 
@@ -362,19 +383,40 @@
         }
       });
 
-      renderVideoData(category, true);
+      renderVideoData(currentFilter, currentInstructorFilter, true);
     }
 
-    function renderVideoData(filter, animate = false) {
-      const filteredHistory = filter === 'all' 
-        ? videoHistory 
-        : videoHistory.filter(item => item.category === filter);
+    function filterVideoByInstructor(instructor) {
+      currentInstructorFilter = instructor;
+      
+      document.querySelectorAll('.instructor-tag').forEach(tag => {
+        tag.classList.remove('active');
+        if (tag.getAttribute('data-instructor') === instructor) {
+          tag.classList.add('active');
+        }
+      });
 
-      updateStats(filteredHistory, filter === 'all' ? videoHistory.length : filteredHistory.length, animate);
+      renderVideoData(currentFilter, currentInstructorFilter, true);
+    }
+
+    function renderVideoData(categoryFilter, instructorFilter = 'all', animate = false) {
+      let filteredHistory = videoHistory;
+      
+      // カテゴリフィルター
+      if (categoryFilter !== 'all') {
+        filteredHistory = filteredHistory.filter(item => item.category === categoryFilter);
+      }
+      
+      // 解説者フィルター
+      if (instructorFilter !== 'all') {
+        filteredHistory = filteredHistory.filter(item => item.instructor === instructorFilter);
+      }
+
+      updateStats(filteredHistory, filteredHistory.length, animate);
 
       if (filteredHistory.length === 0) {
         document.getElementById('main-content').innerHTML = 
-          `<div class="loading">更新履歴はありません</div>`;
+          `<div class="loading">該当する更新履歴はありません</div>`;
         return;
       }
 
@@ -430,11 +472,15 @@
             const titleHtml = item.url 
               ? `<a href="${item.url}" target="_blank" class="video-title-link">${item.title}</a>`
               : `<span class="video-title">${item.title}</span>`;
+            const instructorHtml = item.instructor 
+              ? `<span class="instructor-badge" onclick="filterVideoByInstructor('${item.instructor}')">${item.instructor}</span>`
+              : '';
             
             html += `
               <div class="history-item video-item">
                 <div class="video-item-header">
                   <span class="category-badge ${categoryClass}">${item.category}</span>
+                  ${instructorHtml}
                   ${item.title ? titleHtml : ''}
                 </div>
                 <p class="item-summary">${item.summary}</p>
@@ -462,7 +508,7 @@
         '講座追加': 'cat-add',
         '講座更新': 'cat-update',
         '問題集更新': 'cat-exam',
-        'サイト更新': 'cat-site',
+        'その他': 'cat-other',
         '機能追加': 'cat-feature'
       };
       return map[category] || 'cat-default';
