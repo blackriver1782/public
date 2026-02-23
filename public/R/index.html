@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ご案内とスケジュール | Wedding Information</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            
+            /* --- 背景画像の設定 --- */
+            background-image: url('https://storage.googleapis.com/risa-publicbucket/background-1%202.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            z-index: 0;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(250, 248, 245, 0.7); 
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 25px;
+            border: 1px solid #f0e6d2;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- ご挨拶文のスタイル --- */
+        .greeting {
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 2;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+        .greeting p {
+            margin: 0 0 15px 0;
+        }
+
+        /* --- 挙式詳細のスタイル --- */
+        .details-box {
+            background-color: #faf8f5;
+            border: 1px solid #e8dfd1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 35px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .details-box h2 {
+            font-size: 1.05rem;
+            color: #8b7d6b;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e8dfd1;
+            padding-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .details-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .details-row:last-child {
+            margin-bottom: 0;
+        }
+        .details-label {
+            font-weight: bold;
+            color: #8b7d6b;
+            width: 4.5em;
+            flex-shrink: 0;
+        }
+        .details-value {
+            flex-grow: 1;
+        }
+
+        /* 区切り線 */
+        .divider {
+            border: none;
+            border-top: 1px dashed #d4c4b7;
+            margin: 0 0 30px 0;
+        }
+
+        /* --- スケジュールのスタイル --- */
+        h1 {
+            font-size: 1.1rem;
+            color: #8b7d6b;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+        .schedule-list {
+            margin: 0 auto 30px;
+            padding: 0 0 0 10px;
+            list-style: none;
+        }
+        .schedule-item {
+            border-left: 2px solid #d4c4b7;
+            padding: 0 0 30px 20px;
+            position: relative;
+        }
+        .schedule-item:last-child {
+            border-left: 2px solid transparent;
+            padding-bottom: 0;
+        }
+        .schedule-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background-color: #d4c4b7;
+            border-radius: 50%;
+        }
+        .date {
+            font-weight: bold;
+            color: #8b7d6b;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        .event {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .sub-text {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        .close-container {
+            text-align: center;
+        }
+        .close-btn {
+            background-color: #8b7d6b;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+        .close-btn:active {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="greeting">
+            <p>早春の候<br>皆様におかれましては<br>ますますご清祥のこととお慶び申し上げます。</p>
+            <p>私事ではございますが<br>このたび結婚式を挙げることになりました。<br>新たな門出をぜひ皆様に<br>見守っていただきたく存じます。</p>
+        </div>
+
+        <div class="details-box">
+            <h2>【挙式予定】</h2>
+            <div class="details-row">
+                <div class="details-label">日時：</div>
+                <div class="details-value">
+                    2026年6月13日（土）<br>
+                    12:15〜 (挙式)<br>
+                    13:30〜16:00頃 (披露宴)
+                </div>
+            </div>
+            <div class="details-row">
+                <div class="details-label">会場：</div>
+                <div class="details-value">東京ディズニーシー・ホテルミラコスタ</div>
+            </div>
+            <div class="details-row">
+                <div class="details-label">アクセス：</div>
+                <div class="details-value">JR京葉線・武蔵野線「舞浜」駅からモノレール「ディズニーリゾートライン」にご乗車いただき、3つ目の「東京ディズニーシー・ステーション」にて降車いただきすぐ。</div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <h1>【結婚式当日までの流れ】</h1>
+        <ul class="schedule-list">
+            <li class="schedule-item">
+                <div class="date">4月上旬</div>
+                <div class="event">
+                    招待状郵送
+                    <span class="sub-text">※紙の招待状をご希望された方のみ</span>
+                </div>
+            </li>
+            <li class="schedule-item">
+                <div class="date">5月1日</div>
+                <div class="event">
+                    ご出欠回答締め切り
+                    <span class="sub-text">※Webフォーム/郵送よりご回答をお願いいたします</span>
+                </div>
+            </li>
+            <li class="schedule-item">
+                <div class="date">6月13日</div>
+                <div class="event">
+                    結婚式 当日
+                    <span class="sub-text">挙式・披露宴</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="close-container">
+            <button class="close-btn" onclick="window.close();">閉じる</button>
+        </div>
+    </div>
+</body>
+</html>
