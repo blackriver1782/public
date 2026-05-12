@@ -239,7 +239,6 @@
 {"date": "2026-05-12", "id": "SOA-29", "exam": "SOA", "summary": "選択肢1と3の解説にPerformance InsightsとEnhanced Monitoringの分析レイヤー（DBエンジン内部 vs OSレベル）やTop SQL機能の有無などの違いを補足"}
 {"date": "2026-05-12", "id": "MLA-1067", "exam": "MLA", "summary": "選択肢1の解説にSDK（Software Development Kit）の基本概念を自然に統合し、具体例も追加"}
 {"date": "2026-05-12", "id": "SAP-1110", "exam": "SAP", "summary": "問題文でライトサイジングの概念を簡潔に補足（適切なインスタンスサイズへの最適化）"}
-{"date": "2026-05-12", "id": "SAA-1019", "exam": "SAA", "summary": "お弁当屋さんの比喩を使って、DAXとElastiCacheの違いを小学生にも分かりやすく説明する表現を追加"}
 {"date": "2026-05-12", "id": "DVA-1012", "exam": "DVA", "summary": "API Gatewayの統合タイプの特徴と、直接通信ではなくAPI Gatewayを使う理由について解説を補足"}
 {"date": "2026-05-12", "id": "DOP-1048", "exam": "DOP", "summary": "CodeDeployのタグマッチング処理で単一タググループ内のAND条件でも想定外のマッチングが生じる理由を補足説明として追加"}
 {"date": "2026-05-12", "id": "SAA-1063", "exam": "SAA", "summary": "基本用語の説明を自然に組み込み、各選択肢が間違いである理由をより明確に説明"}
