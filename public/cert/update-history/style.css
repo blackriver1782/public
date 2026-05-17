@@ -24,8 +24,12 @@
   --color-ans-light: #cffafe;
   --color-dop: #ea580c;
   --color-dop-light: #ffedd5;
+  --color-aip: #059669;
+  --color-aip-light: #d1fae5;
   --color-aif: #4f46e5;
   --color-aif-light: #e0e7ff;
+  --color-clf: #6366f1;
+  --color-clf-light: #eef2ff;
   --color-dea: #0d9488;
   --color-dea-light: #ccfbf1;
   --color-mla: #c026d3;
@@ -315,10 +319,22 @@ h1 {
   box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
 }
 
+.filter-tab[data-exam="aip"]:hover {
+  border-color: var(--color-aip);
+  color: var(--color-aip);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
 .filter-tab[data-exam="aif"]:hover {
   border-color: var(--color-aif);
   color: var(--color-aif);
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.filter-tab[data-exam="clf"]:hover {
+  border-color: var(--color-clf);
+  color: var(--color-clf);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 .filter-tab[data-exam="dea"]:hover {
@@ -439,6 +455,18 @@ h1 {
   box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
 }
 
+.filter-tab[data-exam="aip"].active {
+  background: var(--color-aip);
+  border-color: var(--color-aip);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+.filter-tab[data-exam="aip"].active:hover {
+  background: var(--color-aip);
+  border-color: var(--color-aip);
+  color: white;
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
+}
+
 .filter-tab[data-exam="aif"].active {
   background: var(--color-aif);
   border-color: var(--color-aif);
@@ -449,6 +477,18 @@ h1 {
   border-color: var(--color-aif);
   color: white;
   box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+.filter-tab[data-exam="clf"].active {
+  background: var(--color-clf);
+  border-color: var(--color-clf);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+.filter-tab[data-exam="clf"].active:hover {
+  background: var(--color-clf);
+  border-color: var(--color-clf);
+  color: white;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
 }
 
 .filter-tab[data-exam="dea"].active {
@@ -663,7 +703,9 @@ h1 {
 .exam-dva { background: var(--color-dva-light); color: #5b21b6; }
 .exam-ans { background: var(--color-ans-light); color: #0e7490; }
 .exam-dop { background: var(--color-dop-light); color: #c2410c; }
+.exam-aip { background: var(--color-aip-light); color: #047857; }
 .exam-aif { background: var(--color-aif-light); color: #3730a3; }
+.exam-clf { background: var(--color-clf-light); color: #4338ca; }
 .exam-dea { background: var(--color-dea-light); color: #0f766e; }
 .exam-mla { background: var(--color-mla-light); color: #a21caf; }
 .exam-mls { background: var(--color-mls-light); color: #9f1239; }

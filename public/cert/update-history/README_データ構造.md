@@ -120,7 +120,7 @@ echo '{"date":"2025-11-27","id":"SAP-100","exam":"SAP","summary":"修正1"}
    - 月: `YYYY-MM`（例: 2025-11）
 
 3. **exam フィールドの値**
-   - 大文字で統一: `SAP`, `SAA`, `SOA`, `SCS`, `DVA`, `ANS`, `DOP`, `AIF`, `DEA`, `MLA`, `MLS`
+   - 大文字で統一: `SAP`, `SAA`, `SOA`, `SCS`, `DVA`, `ANS`, `DOP`, `AIP`, `AIF`, `CLF`, `DEA`, `MLA`
 
 4. **追記時はechoコマンドを使用**
    - `>>` で末尾に追記（上書きではない）

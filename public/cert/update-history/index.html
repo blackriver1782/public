@@ -220,7 +220,7 @@
         counts[item.exam] = (counts[item.exam] || 0) + 1;
       });
 
-      const exams = ['SAP', 'SAA', 'SOA', 'SCS', 'DVA', 'ANS', 'DOP', 'AIF', 'DEA', 'MLA', 'MLS'].filter(e => counts[e]);
+      const exams = ['SAP', 'SAA', 'SOA', 'SCS', 'DVA', 'ANS', 'DOP', 'AIP', 'AIF', 'CLF', 'DEA', 'MLA'].filter(e => counts[e]);
       
       let html = '<div class="filter-tabs">';
       html += `<button class="filter-tab active" data-exam="all" onclick="filterExamByExam('all')">すべて<span class="tab-count">(${counts.all})</span></button>`;
