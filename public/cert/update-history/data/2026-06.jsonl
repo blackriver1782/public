@@ -480,3 +480,17 @@
 {"date": "2026-06-16", "id": "SOA-129", "exam": "SOA", "summary": "選択肢4の解説に、AWS Config マネージドルール restricted-common-ports の存在と、それでも Trusted Advisor より手順・コスト面で手間がかかる旨を補足追記。"}
 {"date": "2026-06-16", "id": "CLF-1012", "exam": "CLF", "summary": "選択肢1解説の【補足：Right Sizing と関連サービス】内に、Cost ExplorerとCompute Optimizerの役割差（コスト可視化 vs サイズ推奨）を自然統合で追記。"}
 {"date": "2026-06-16", "id": "AIP-70", "exam": "AIP", "summary": "選択肢1の解説に、マルチホップ関係探索の具体例（薬剤X→酵素A→遺伝子経路B→疾患Y）とGraphRAGがそれをどう解決するか（自動グラフ構築→トラバーサル→LLM統合）の説明を追記。"}
+{"date": "2026-06-17", "id": "ANS-1106", "exam": "ANS", "summary": "解説を修正しました。"}
+{"date": "2026-06-17", "id": "SAP-1300", "exam": "SAP", "summary": "選択肢1と2の解説が選択肢テキストと食い違っていた問題を修正。選択肢1解説をプライベートIP VPN（DX上のIPsec）の説明に、選択肢2解説をインターネット経由VPNの説明に修正。I列のポイントテーブルと台本も整合させた。"}
+{"date": "2026-06-17", "id": "SAP-1021", "exam": "SAP", "summary": "選択肢1解説の末尾にあったHTMLタグ崩れ（『</p>1E40AF;font-weight:bold;\">EventBridge</span>...』という断片）を、自然な締めの一文に置換して整形した。技術的内容に変更なし。"}
+{"date": "2026-06-17", "id": "ANS-1215", "exam": "ANS", "summary": "選択肢1の解説にNLBのソースIPベース・スティッキーセッションの仕組み（Cookie比較・フロー単位維持）を自然統合し、選択肢3解説のNDA配慮違反表現（試験頻出）を中立表現に修正"}
+{"date": "2026-06-17", "id": "SCS-1029", "exam": "SCS", "summary": "Direct Connect単体でIPsec暗号化が提供されない点と、Direct Connect+Site-to-Site VPNを組み合わせる際の役割分担（物理経路と暗号化トンネルの2層構造）を解説に補足。"}
+{"date": "2026-06-17", "id": "DOP-1096", "exam": "DOP", "summary": "選択肢2の解説に、AWSControlTowerExecutionロールの信頼ポリシーが管理アカウントのPrincipalのみを許可する具体的仕様と、なぜ専用アカウントから直接AssumeRoleできずロールチェーンが必要なのかの理由を補足。"}
+{"date": "2026-06-17", "id": "SAP-1261", "exam": "SAP", "summary": "選択肢3解説に、CognitoがCI/CDに対して過剰設計である理由（エンドユーザー認証向けで機械的ワークロードには不適）とMAU課金モデルの不整合に関する説明を追記した。"}
+{"date": "2026-06-17", "id": "SAP-1027", "exam": "SAP", "summary": "選択肢2の補足末尾に、既存ALBがある構成でAPI Gatewayを前段に追加することの問題点（入口の二重化・課金増）とAPI Gatewayが本来活きる場面（Lambda直結・認証集約等）を追記。CloudFront vs Global Acceleratorの比較は既に解説4の補足とヒントで十分カバーされているため変更不要。"}
+{"date": "2026-06-17", "id": "SAP-1130", "exam": "SAP", "summary": "ElastiCache for Redisがキャッシュ以外のデータストアとしても使える点を解説1に追記し、解説4のElastiCacheとMemoryDBの書き込みレイテンシ差を明確化した。"}
+{"date": "2026-06-17", "id": "SAA-1197", "exam": "SAA", "summary": "選択肢1の解説にIMDS(169.254.169.254)と一時認証情報3点セットの仕組みを自然統合。選択肢2にIAMユーザー+AssumeRole方式でも入口に長期キーが要るため要件を満たせない点を補足。"}
+{"date": "2026-06-17", "id": "ANS-1111", "exam": "ANS", "summary": "選択肢1の補足にミラーリングのソース/ターゲット指定可否一覧と、NLBがソース不可・ターゲット可となる理由を追記。"}
+{"date": "2026-06-17", "id": "DOP-1088", "exam": "DOP", "summary": "選択肢3の解説に、SubmitMultiRegionAccessPointRoutes API は CloudWatch/EventBridge + Lambda と組み合わせて自動化することで問題文の『自動切り替え』要件を満たす旨を明確化。併せて末尾に残っていた壊れた文断片を除去。ヒントにも自動化視点を追記。"}
+{"date": "2026-06-17", "id": "DVA-1045", "exam": "DVA", "summary": "選択肢1の解説に、ECRプッシュ時スキャン自体には自動停止機能がなくLambdaとの組み合わせで初めてゲートが機能する点、およびECRプッシュは本番デプロイではない点を補足。"}
+{"date": "2026-06-17", "id": "MLA-1035", "exam": "MLA", "summary": "選択肢1の解説に、AWS Glue Data Quality と SageMaker Model Monitor の検証対象の違い（データ自体 vs デプロイ済みモデルの振る舞い）と、本問でModel Monitorが該当しない理由を補足。"}
