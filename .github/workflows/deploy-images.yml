@@ -11,9 +11,12 @@ permissions:
   pages: write
   id-token: write
 
+# Pages は常に最新のコミットだけが意味を持つため、後続の実行が先行分を蹴って進む。
+# false にしていた頃、waiting のまま固まった実行が約1ヶ月グループを掴み、
+# 後続が連日 cancelled になって公開サイトが 2026-08-05 から更新されなかった。
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
